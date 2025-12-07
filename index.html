@@ -26,14 +26,14 @@
             overflow: hidden;
         }
         
-        /* Top Navigation Bar - Fixed height */
+        /* Top Navigation Bar - COMPACT height */
         .nav-bar {
             background: #222;
-            padding: 0 10px;
+            padding: 0 8px; /* Reduced padding */
             color: #4CAF50;
-            height: 60px;
-            min-height: 60px;
-            max-height: 60px;
+            height: 40px; /* Reduced from 60px */
+            min-height: 40px;
+            max-height: 40px;
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -42,21 +42,21 @@
             flex: 0 0 auto;
         }
         
-        /* Channel buttons in nav bar */
+        /* Channel buttons in nav bar - COMPACT */
         .channel-buttons {
             display: flex;
-            gap: 8px;
+            gap: 6px; /* Reduced gap */
             overflow-x: auto;
             flex: 1;
             height: 100%;
             align-items: center;
-            padding: 0 10px;
+            padding: 0 8px; /* Reduced padding */
             scrollbar-width: thin;
             scrollbar-color: #4CAF50 #222;
         }
         
         .channel-buttons::-webkit-scrollbar {
-            height: 4px;
+            height: 3px; /* Thinner scrollbar */
         }
         
         .channel-buttons::-webkit-scrollbar-track {
@@ -68,22 +68,22 @@
             border-radius: 2px;
         }
         
-        /* Channel button styles */
+        /* Channel button styles - COMPACT */
         .channel-btn {
             background: #333;
             color: #ddd;
             border: 2px solid transparent;
-            padding: 8px 16px;
-            border-radius: 6px;
-            font-size: 16px;
+            padding: 5px 12px; /* Reduced padding */
+            border-radius: 5px; /* Slightly smaller radius */
+            font-size: 14px; /* Slightly smaller font */
             cursor: pointer;
             transition: all 0.2s ease;
             white-space: nowrap;
-            min-width: 100px;
+            min-width: 90px; /* Reduced min-width */
             text-align: center;
             outline: none;
             position: relative;
-            height: 40px;
+            height: 30px; /* Reduced height */
             display: flex;
             align-items: center;
             justify-content: center;
@@ -99,8 +99,8 @@
             background: #4CAF50;
             color: white;
             border-color: white;
-            transform: scale(1.05);
-            box-shadow: 0 0 10px rgba(76, 175, 80, 0.7);
+            transform: scale(1.03); /* Slightly less scale */
+            box-shadow: 0 0 8px rgba(76, 175, 80, 0.7); /* Smaller shadow */
             z-index: 10;
         }
         
@@ -110,22 +110,22 @@
             border-color: #81C784;
         }
         
-        /* Refresh button */
+        /* Refresh button - COMPACT */
         .refresh-btn {
             background: #444;
             color: white;
             border: none;
-            padding: 8px 20px;
-            border-radius: 6px;
-            font-size: 14px;
+            padding: 5px 12px; /* Reduced padding */
+            border-radius: 5px;
+            font-size: 12px; /* Smaller font */
             cursor: pointer;
             transition: all 0.2s;
-            height: 40px;
+            height: 30px; /* Reduced height */
             display: flex;
             align-items: center;
             justify-content: center;
-            min-width: 100px;
-            margin-left: 10px;
+            min-width: 80px; /* Reduced min-width */
+            margin-left: 8px; /* Reduced margin */
             flex-shrink: 0;
         }
         
@@ -137,160 +137,127 @@
             outline: 2px solid #4CAF50;
         }
         
-        /* Video Container - Reduced height for TV */
+        /* Video Container - More space now (40px less for nav) */
         .video-container {
             flex: 1;
             background: #000;
             width: 100%;
             min-height: 0;
-            height: 80vh; /* Reduced from 100vh-60px to 80vh */
-            max-height: 80vh; /* Limit maximum height */
+            height: calc(100vh - 40px); /* Adjusted for smaller nav */
             position: relative;
             overflow: hidden;
-            margin: 0 auto; /* Center it */
         }
         
-        /* Video Player - Fixed aspect ratio for TV */
+        /* Video Player */
         .video-wrapper {
             width: 100%;
             height: 100%;
             background: #000;
             position: relative;
             overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
         }
         
         #playerFrame {
             width: 100%;
             height: 100%;
-            max-height: 80vh; /* Don't exceed 80% of viewport */
             border: none;
             display: block;
-            position: relative;
+            position: absolute;
+            top: 0;
+            left: 0;
         }
         
         /* Status indicator */
         .status-indicator {
             position: fixed;
-            top: 70px;
+            top: 45px; /* Adjusted for smaller nav */
             right: 10px;
             background: rgba(0,0,0,0.9);
             color: #4CAF50;
-            padding: 12px 16px;
-            border-radius: 6px;
-            font-size: 14px;
+            padding: 10px 14px; /* Slightly smaller */
+            border-radius: 5px;
+            font-size: 13px;
             display: none;
             z-index: 1000;
             border: 1px solid #4CAF50;
             max-width: 300px;
         }
         
-        /* Focus highlight animation */
-        @keyframes pulse {
+        /* Focus highlight animation - FIXED BLINKING ISSUE */
+        @keyframes pulse-smooth {
             0% { box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.7); }
-            70% { box-shadow: 0 0 0 10px rgba(76, 175, 80, 0); }
+            50% { box-shadow: 0 0 0 6px rgba(76, 175, 80, 0); }
             100% { box-shadow: 0 0 0 0 rgba(76, 175, 80, 0); }
         }
         
         .channel-btn.focus-highlight {
-            animation: pulse 1.5s infinite;
+            animation: pulse-smooth 2s infinite; /* Slower, smoother animation */
         }
         
-        /* Mode Indicator - Hidden */
-        .mode-indicator {
-            display: none !important;
-        }
-        
-        /* Responsive adjustments for TV */
+        /* Responsive adjustments */
         @media (max-width: 768px) {
             .channel-btn {
-                min-width: 80px;
-                font-size: 14px;
-                padding: 8px 12px;
+                min-width: 70px;
+                font-size: 12px;
+                padding: 4px 8px;
             }
             
             .refresh-btn {
-                min-width: 80px;
-                font-size: 12px;
-                padding: 8px 12px;
+                min-width: 60px;
+                font-size: 11px;
+                padding: 4px 8px;
+            }
+            
+            .nav-bar {
+                height: 35px;
+                min-height: 35px;
+                max-height: 35px;
             }
             
             .video-container {
-                height: 75vh; /* Even smaller on mobile */
-                max-height: 75vh;
+                height: calc(100vh - 35px);
             }
             
-            #playerFrame {
-                max-height: 75vh;
+            .status-indicator {
+                top: 40px;
             }
         }
         
         @media (max-width: 480px) {
             .nav-bar {
-                height: 50px;
-                min-height: 50px;
-                max-height: 50px;
+                height: 35px;
+                min-height: 35px;
+                max-height: 35px;
             }
             
             .video-container {
-                height: 70vh; /* Smaller on very small screens */
-                max-height: 70vh;
+                height: calc(100vh - 35px);
             }
             
             .channel-btn {
-                min-width: 70px;
-                font-size: 12px;
-                padding: 6px 10px;
-                height: 35px;
+                min-width: 60px;
+                font-size: 11px;
+                padding: 3px 6px;
+                height: 25px;
             }
             
             .refresh-btn {
-                min-width: 70px;
-                font-size: 12px;
-                padding: 6px 10px;
-                height: 35px;
+                min-width: 50px;
+                font-size: 10px;
+                padding: 3px 6px;
+                height: 25px;
             }
             
             .status-indicator {
-                top: 60px;
-                font-size: 12px;
-                padding: 8px 12px;
-            }
-            
-            #playerFrame {
-                max-height: 70vh;
-            }
-        }
-        
-        /* TV-specific adjustments */
-        @media (min-width: 1200px) {
-            .video-container {
-                height: 85vh; /* Slightly larger on big screens */
-                max-height: 85vh;
-            }
-            
-            #playerFrame {
-                max-height: 85vh;
-            }
-        }
-        
-        /* Fix for Kiwi Browser on Android TV */
-        @media (display-mode: fullscreen) or (display-mode: standalone) {
-            .video-container {
-                height: calc(100vh - 80px) !important; /* Account for system UI */
-                max-height: calc(100vh - 80px) !important;
-            }
-            
-            #playerFrame {
-                max-height: calc(100vh - 80px) !important;
+                top: 40px;
+                font-size: 11px;
+                padding: 8px 10px;
             }
         }
     </style>
 </head>
 <body>
-    <!-- Top Navigation Bar with Channel Buttons -->
+    <!-- Top Navigation Bar with Channel Buttons - COMPACT -->
     <div class="nav-bar">
         <div class="channel-buttons" id="channelButtons">
             <!-- Channel buttons will be added here dynamically -->
@@ -300,12 +267,7 @@
         </button>
     </div>
     
-    <!-- Mode Indicator - Hidden -->
-    <div class="mode-indicator nav-mode" id="modeIndicator">
-        Mode: Navigation (Enter: Select Channel)
-    </div>
-    
-    <!-- Video Player - Reduced height -->
+    <!-- Video Player - More space now -->
     <div class="video-container">
         <div class="video-wrapper">
             <iframe id="playerFrame" 
@@ -365,6 +327,7 @@
         let isVideoPlaying = false;
         let mode = 'navigation';
         let skipAdTimeout = null;
+        let isAnimating = false; // To prevent blinking issues
         
         // Initialize application
         function init() {
@@ -380,34 +343,6 @@
                 playVideo(channels[0].embedUrl, channels[0].title);
                 showStatus("Auto-playing first channel...", 2000);
             }, 1000);
-            
-            // Adjust for Android TV/Kiwi Browser
-            adjustForAndroidTV();
-        }
-        
-        // Adjust layout for Android TV/Kiwi Browser
-        function adjustForAndroidTV() {
-            const isAndroidTV = /Android|Adr/.test(navigator.userAgent) && 
-                               (navigator.userAgent.includes('TV') || 
-                                navigator.userAgent.includes('AFT') ||
-                                screen.width > 1280);
-            
-            if (isAndroidTV) {
-                // Adjust video container for TV
-                const videoContainer = document.querySelector('.video-container');
-                const playerFrame = document.getElementById('playerFrame');
-                
-                // Use 90% of available height for TV
-                const availableHeight = window.innerHeight - 60; // minus nav bar
-                const tvHeight = Math.min(availableHeight * 0.9, window.innerHeight * 0.85);
-                
-                videoContainer.style.height = tvHeight + 'px';
-                videoContainer.style.maxHeight = tvHeight + 'px';
-                playerFrame.style.maxHeight = tvHeight + 'px';
-                
-                console.log('Android TV detected, setting height to:', tvHeight);
-                showStatus("Android TV mode activated", 2000);
-            }
         }
         
         // Create channel buttons in nav bar
@@ -498,13 +433,6 @@
                         mode = 'skip-ad';
                     }
                 }
-                
-                // 'S' key to manually toggle skip mode
-                if (e.key === 's' || e.key === 'S') {
-                    e.preventDefault();
-                    mode = mode === 'navigation' ? 'skip-ad' : 'navigation';
-                    showStatus(`Mode: ${mode === 'navigation' ? 'Navigation' : 'Skip Ad'}`, 2000);
-                }
             });
         }
         
@@ -524,10 +452,15 @@
             showStatus(`Selected: ${channels[newIndex].title}`, 1000);
         }
         
-        // Focus a specific button
+        // Focus a specific button - FIXED BLINKING ISSUE
         function focusButton(index) {
             if (channelButtons.length === 0) return;
             
+            // Prevent rapid animations causing blinking
+            if (isAnimating) return;
+            isAnimating = true;
+            
+            // Remove focus from all buttons
             channelButtons.forEach(btn => {
                 btn.classList.remove('focus-highlight');
                 btn.blur();
@@ -540,8 +473,12 @@
             currentFocusIndex = index;
             const button = channelButtons[index];
             
-            button.classList.add('focus-highlight');
-            button.focus({preventScroll: false});
+            // Add focus highlight with delay to prevent blinking
+            setTimeout(() => {
+                button.classList.add('focus-highlight');
+                button.focus({preventScroll: false});
+                isAnimating = false;
+            }, 50);
             
             // Scroll button into view
             button.scrollIntoView({
@@ -551,21 +488,22 @@
             });
         }
         
-        // Select button (visual feedback)
+        // Select button (visual feedback) - FIXED BLINKING ISSUE
         function selectButton(index) {
             if (channelButtons.length === 0) return;
             
+            // Remove active class from all
             channelButtons.forEach(btn => btn.classList.remove('active'));
             
             if (channelButtons[index]) {
                 channelButtons[index].classList.add('active');
-                channelButtons[index].classList.remove('focus-highlight');
                 
+                // Don't remove focus-highlight immediately, smoother transition
                 setTimeout(() => {
                     if (channelButtons[index]) {
                         channelButtons[index].classList.add('focus-highlight');
                     }
-                }, 300);
+                }, 100);
             }
         }
         
@@ -589,7 +527,6 @@
                 `rel=0&` +
                 `modestbranding=1&` +
                 `playsinline=1&` +
-                `enablejsapi=0&` + // Disable API to reduce issues
                 `_=${timestamp}`;
             
             playerFrame.src = finalUrl;
@@ -636,18 +573,6 @@
                             func: 'seekTo',
                             args: [30, true]
                         }), '*');
-                    },
-                    
-                    // Method 3: Key press simulation (Enter key for skip)
-                    () => {
-                        const event = new KeyboardEvent('keydown', {
-                            key: 'Enter',
-                            code: 'Enter',
-                            keyCode: 13,
-                            which: 13,
-                            bubbles: true
-                        });
-                        playerFrame.contentWindow.document.dispatchEvent(event);
                     }
                 ];
                 
@@ -656,14 +581,13 @@
                     try {
                         method();
                     } catch (e) {
-                        console.log("Skip method failed:", e);
+                        // Silently fail
                     }
                 });
                 
                 showStatus("Skip attempted", 1500);
                 
             } catch (error) {
-                console.log("Skip ad error:", error);
                 showStatus("Cannot skip ad", 2000);
             }
             
@@ -688,9 +612,6 @@
                     mode = 'skip-ad';
                 }
             });
-            
-            // Window resize handler for Android TV
-            window.addEventListener('resize', adjustForAndroidTV);
         }
         
         // Show status message
