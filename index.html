@@ -26,14 +26,14 @@
             overflow: hidden;
         }
         
-        /* Top Navigation Bar - ULTRA COMPACT height */
+        /* Top Navigation Bar - SUPER ULTRA COMPACT height */
         .nav-bar {
             background: #222;
-            padding: 0 6px;
+            padding: 0 4px; /* Even less padding */
             color: #4CAF50;
-            height: 30px;
-            min-height: 30px;
-            max-height: 30px;
+            height: 20px; /* REDUCED from 30px to 20px (50px less total!) */
+            min-height: 20px;
+            max-height: 20px;
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -42,21 +42,21 @@
             flex: 0 0 auto;
         }
         
-        /* Channel buttons in nav bar - ULTRA COMPACT */
+        /* Channel buttons in nav bar - SUPER COMPACT */
         .channel-buttons {
             display: flex;
-            gap: 4px;
+            gap: 3px; /* Even smaller gap */
             overflow-x: auto;
             flex: 1;
             height: 100%;
             align-items: center;
-            padding: 0 6px;
+            padding: 0 4px; /* Less padding */
             scrollbar-width: thin;
             scrollbar-color: #4CAF50 #222;
         }
         
         .channel-buttons::-webkit-scrollbar {
-            height: 2px;
+            height: 1px; /* Very thin scrollbar */
         }
         
         .channel-buttons::-webkit-scrollbar-track {
@@ -65,29 +65,30 @@
         
         .channel-buttons::-webkit-scrollbar-thumb {
             background: #4CAF50;
-            border-radius: 1px;
+            border-radius: 0.5px;
         }
         
-        /* Channel button styles - ULTRA COMPACT */
+        /* Channel button styles - SUPER COMPACT */
         .channel-btn {
             background: #333;
             color: #ddd;
             border: 1px solid transparent;
-            padding: 3px 8px;
-            border-radius: 3px;
-            font-size: 12px;
+            padding: 1px 5px; /* Minimal padding */
+            border-radius: 2px; /* Very small radius */
+            font-size: 10px; /* Smaller font */
             cursor: pointer;
             transition: all 0.2s ease;
             white-space: nowrap;
-            min-width: 70px;
+            min-width: 55px; /* Much smaller min-width */
             text-align: center;
             outline: none;
             position: relative;
-            height: 22px;
+            height: 16px; /* Reduced height */
             display: flex;
             align-items: center;
             justify-content: center;
             flex-shrink: 0;
+            line-height: 1; /* Tight line spacing */
         }
         
         .channel-btn:hover {
@@ -99,8 +100,8 @@
             background: #4CAF50;
             color: white;
             border-color: white;
-            transform: scale(1.02);
-            box-shadow: 0 0 4px rgba(76, 175, 80, 0.7);
+            transform: scale(1.01); /* Very slight scale */
+            box-shadow: 0 0 2px rgba(76, 175, 80, 0.7); /* Tiny shadow */
             z-index: 10;
         }
         
@@ -110,22 +111,22 @@
             border-color: #81C784;
         }
         
-        /* Refresh button - ICON ONLY */
+        /* Refresh button - SUPER COMPACT */
         .refresh-btn {
             background: #444;
             color: white;
             border: none;
             padding: 0;
-            border-radius: 3px;
-            font-size: 14px; /* For icon sizing */
+            border-radius: 2px;
+            font-size: 10px; /* Smaller icon */
             cursor: pointer;
             transition: all 0.2s;
-            height: 22px;
-            width: 22px; /* Square button */
+            height: 16px; /* Reduced height */
+            width: 16px; /* Smaller square */
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-left: 6px;
+            margin-left: 4px; /* Less margin */
             flex-shrink: 0;
         }
         
@@ -135,30 +136,15 @@
         
         .refresh-btn:focus {
             outline: 1px solid #4CAF50;
-            transform: rotate(90deg); /* Fun rotation on focus */
         }
         
-        /* Refresh icon animation */
-        .refresh-icon {
-            display: inline-block;
-            transition: transform 0.3s;
-        }
-        
-        .refresh-btn:hover .refresh-icon {
-            transform: rotate(45deg);
-        }
-        
-        .refresh-btn:active .refresh-icon {
-            transform: rotate(180deg);
-        }
-        
-        /* Video Container - 30px more space! */
+        /* Video Container - 50px MORE space now! */
         .video-container {
             flex: 1;
             background: #000;
             width: 100%;
             min-height: 0;
-            height: calc(100vh - 30px);
+            height: calc(100vh - 20px); /* 20px nav instead of 60px - 50px more space! */
             position: relative;
             overflow: hidden;
         }
@@ -185,94 +171,122 @@
         /* Status indicator */
         .status-indicator {
             position: fixed;
-            top: 35px;
+            top: 25px; /* Adjusted for smaller nav */
             right: 10px;
             background: rgba(0,0,0,0.9);
             color: #4CAF50;
-            padding: 8px 12px;
-            border-radius: 4px;
-            font-size: 11px;
+            padding: 6px 10px; /* Smaller */
+            border-radius: 3px;
+            font-size: 9px; /* Smaller */
             display: none;
             z-index: 1000;
             border: 1px solid #4CAF50;
-            max-width: 250px;
+            max-width: 200px;
         }
         
         /* Focus highlight animation */
-        @keyframes pulse-subtle {
-            0% { box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.5); }
-            50% { box-shadow: 0 0 0 3px rgba(76, 175, 80, 0); }
+        @keyframes pulse-tiny {
+            0% { box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.3); }
+            50% { box-shadow: 0 0 0 2px rgba(76, 175, 80, 0); }
             100% { box-shadow: 0 0 0 0 rgba(76, 175, 80, 0); }
         }
         
         .channel-btn.focus-highlight {
-            animation: pulse-subtle 2s infinite;
+            animation: pulse-tiny 2s infinite;
+        }
+        
+        /* Channel name abbreviations for very small screens */
+        .channel-btn .full-name {
+            display: inline;
+        }
+        
+        .channel-btn .short-name {
+            display: none;
         }
         
         /* Responsive adjustments */
         @media (max-width: 768px) {
             .channel-btn {
-                min-width: 60px;
-                font-size: 11px;
-                padding: 2px 6px;
+                min-width: 45px;
+                font-size: 9px;
+                padding: 1px 3px;
             }
             
             .refresh-btn {
-                width: 20px;
-                height: 20px;
-                font-size: 12px;
+                width: 14px;
+                height: 14px;
+                font-size: 9px;
             }
             
             .nav-bar {
-                height: 28px;
-                min-height: 28px;
-                max-height: 28px;
+                height: 18px;
+                min-height: 18px;
+                max-height: 18px;
             }
             
             .video-container {
-                height: calc(100vh - 28px);
+                height: calc(100vh - 18px);
             }
             
             .status-indicator {
-                top: 33px;
+                top: 23px;
+                font-size: 8px;
+                padding: 4px 8px;
+            }
+            
+            /* Show short names on tablets */
+            .channel-btn .full-name {
+                display: none;
+            }
+            
+            .channel-btn .short-name {
+                display: inline;
             }
         }
         
         @media (max-width: 480px) {
             .nav-bar {
-                height: 26px;
-                min-height: 26px;
-                max-height: 26px;
+                height: 16px;
+                min-height: 16px;
+                max-height: 16px;
             }
             
             .video-container {
-                height: calc(100vh - 26px);
+                height: calc(100vh - 16px);
             }
             
             .channel-btn {
-                min-width: 50px;
-                font-size: 10px;
-                padding: 2px 4px;
-                height: 20px;
+                min-width: 40px;
+                font-size: 8px;
+                padding: 0 2px;
+                height: 14px;
             }
             
             .refresh-btn {
-                width: 18px;
-                height: 18px;
-                font-size: 10px;
-                margin-left: 4px;
+                width: 12px;
+                height: 12px;
+                font-size: 8px;
+                margin-left: 2px;
             }
             
             .status-indicator {
-                top: 31px;
-                font-size: 10px;
-                padding: 6px 8px;
+                top: 21px;
+                font-size: 7px;
+                padding: 3px 6px;
+            }
+        }
+        
+        /* For very small text, ensure readability */
+        @media (max-height: 500px) {
+            .channel-btn {
+                font-size: 9px !important;
+                min-width: 50px !important;
             }
         }
     </style>
 </head>
 <body>
-    <!-- Top Navigation Bar with Channel Buttons -->
+    <!-- Top Navigation Bar with Channel Buttons - SUPER COMPACT -->
     <div class="nav-bar">
         <div class="channel-buttons" id="channelButtons">
             <!-- Channel buttons will be added here dynamically -->
@@ -282,7 +296,7 @@
         </button>
     </div>
     
-    <!-- Video Player -->
+    <!-- Video Player - 50px MORE space! -->
     <div class="video-container">
         <div class="video-wrapper">
             <iframe id="playerFrame" 
@@ -303,30 +317,42 @@
         const channels = [
             {
                 title: "92 News",
+                shortTitle: "92",
                 embedUrl: "https://www.youtube.com/embed/8uh7YorHaa8?autoplay=1&rel=0&modestbranding=1&playsinline=1"
             },
             {
                 title: "AAJ News",
+                shortTitle: "AAJ",
                 embedUrl: "https://www.youtube.com/embed/KH36EOuT7Rw?autoplay=1&rel=0&modestbranding=1&playsinline=1"
             },
             {
                 title: "Geo News",
+                shortTitle: "Geo",
                 embedUrl: "https://www.youtube.com/embed/ifgOMEerYQI?autoplay=1&rel=0&modestbranding=1&playsinline=1"
             },
             {
                 title: "24 News Live",
+                shortTitle: "24",
                 embedUrl: "https://www.youtube.com/embed/l18WSuRMtHo?autoplay=1&rel=0&modestbranding=1&playsinline=1"
             },
             {
                 title: "Dunya News",
+                shortTitle: "Dunya",
                 embedUrl: "https://www.youtube.com/embed/GlHSFtTFfJE?autoplay=1&rel=0&modestbranding=1&playsinline=1"
             },
             {
+                title: "Samaa News",
+                shortTitle: "Samaa",
+                embedUrl: "https://www.youtube.com/embed/0ozWs13Msus?autoplay=1&rel=0&modestbranding=1&playsinline=1"
+            },
+            {
                 title: "TRT English",
+                shortTitle: "TRT",
                 embedUrl: "https://www.youtube.com/embed/by1sxGgo3TU?autoplay=1&rel=0&modestbranding=1&playsinline=1"
             },
             {
                 title: "Al Jazeera English",
+                shortTitle: "AJ",
                 embedUrl: "https://www.youtube.com/embed/gCNeDWCI0vo?autoplay=1&rel=0&modestbranding=1&playsinline=1"
             }
         ];
@@ -337,7 +363,7 @@
             showStatusMessages: true,
             skipAdDelay: 500,
             skipAdKey: 'Enter',
-            autoPlayDelay: 4000 // INCREASED to 4 seconds
+            autoPlayDelay: 4000
         };
         
         // State variables
@@ -357,9 +383,9 @@
             setupKeyboardNavigation();
             setupEventListeners();
             focusButton(0);
-            showStatus("Loading... Auto-play in " + (config.autoPlayDelay/1000) + " seconds", 3000);
+            showStatus("Loading... Auto-play in " + (config.autoPlayDelay/1000) + "s", 3000);
             
-            // INCREASED DELAY: Auto-play first channel after 4 seconds
+            // Auto-play first channel after delay
             setTimeout(() => {
                 if (!hasAutoPlayed) {
                     autoPlayFirstChannel();
@@ -384,7 +410,7 @@
                     playVideo(firstChannel.embedUrl, firstChannel.title);
                 }
                 hasAutoPlayed = true;
-            }, 500); // Additional delay before playing
+            }, 500);
         }
         
         // Create channel buttons in nav bar
@@ -396,7 +422,19 @@
             channels.forEach((channel, index) => {
                 const button = document.createElement('button');
                 button.className = 'channel-btn';
-                button.textContent = channel.title;
+                
+                // Add both full and short names
+                const fullSpan = document.createElement('span');
+                fullSpan.className = 'full-name';
+                fullSpan.textContent = channel.title;
+                
+                const shortSpan = document.createElement('span');
+                shortSpan.className = 'short-name';
+                shortSpan.textContent = channel.shortTitle || channel.title.substring(0, 4);
+                
+                button.appendChild(fullSpan);
+                button.appendChild(shortSpan);
+                
                 button.dataset.index = index;
                 button.dataset.embedUrl = channel.embedUrl;
                 button.dataset.channelTitle = channel.title;
@@ -709,7 +747,7 @@
         
         // Setup event listeners
         function setupEventListeners() {
-            // Refresh button - ICON ONLY
+            // Refresh button
             document.getElementById('refreshBtn').addEventListener('click', refreshCurrentVideo);
             
             // Add hover effect for refresh button
