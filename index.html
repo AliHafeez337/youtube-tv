@@ -137,34 +137,38 @@
             outline: 2px solid #4CAF50;
         }
         
-        /* Video Container - Takes ALL remaining space with NO scrolling */
+        /* Video Container - Reduced height for TV */
         .video-container {
             flex: 1;
             background: #000;
             width: 100%;
             min-height: 0;
-            height: calc(100vh - 60px);
+            height: 80vh; /* Reduced from 100vh-60px to 80vh */
+            max-height: 80vh; /* Limit maximum height */
             position: relative;
             overflow: hidden;
+            margin: 0 auto; /* Center it */
         }
         
-        /* Video Player - Fills the container */
+        /* Video Player - Fixed aspect ratio for TV */
         .video-wrapper {
             width: 100%;
             height: 100%;
             background: #000;
             position: relative;
             overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         
         #playerFrame {
             width: 100%;
             height: 100%;
+            max-height: 80vh; /* Don't exceed 80% of viewport */
             border: none;
             display: block;
-            position: absolute;
-            top: 0;
-            left: 0;
+            position: relative;
         }
         
         /* Status indicator */
@@ -194,29 +198,12 @@
             animation: pulse 1.5s infinite;
         }
         
-        /* Mode Indicator - MOVED BELOW NAV BAR */
+        /* Mode Indicator - Hidden */
         .mode-indicator {
-            position: absolute;
-            top: 70px; /* 60px nav bar + 10px margin */
-            left: 10px;
-            background: rgba(0,0,0,0.7);
-            color: white;
-            padding: 5px 10px;
-            border-radius: 5px;
-            font-size: 12px;
-            z-index: 100;
-            display: none; /* Hidden by default */
+            display: none !important;
         }
         
-        .mode-indicator.nav-mode {
-            border: 2px solid #4CAF50;
-        }
-        
-        .mode-indicator.skip-mode {
-            border: 2px solid #FF9800;
-        }
-        
-        /* Responsive adjustments */
+        /* Responsive adjustments for TV */
         @media (max-width: 768px) {
             .channel-btn {
                 min-width: 80px;
@@ -229,6 +216,15 @@
                 font-size: 12px;
                 padding: 8px 12px;
             }
+            
+            .video-container {
+                height: 75vh; /* Even smaller on mobile */
+                max-height: 75vh;
+            }
+            
+            #playerFrame {
+                max-height: 75vh;
+            }
         }
         
         @media (max-width: 480px) {
@@ -239,7 +235,8 @@
             }
             
             .video-container {
-                height: calc(100vh - 50px);
+                height: 70vh; /* Smaller on very small screens */
+                max-height: 70vh;
             }
             
             .channel-btn {
@@ -262,8 +259,32 @@
                 padding: 8px 12px;
             }
             
-            .mode-indicator {
-                top: 60px;
+            #playerFrame {
+                max-height: 70vh;
+            }
+        }
+        
+        /* TV-specific adjustments */
+        @media (min-width: 1200px) {
+            .video-container {
+                height: 85vh; /* Slightly larger on big screens */
+                max-height: 85vh;
+            }
+            
+            #playerFrame {
+                max-height: 85vh;
+            }
+        }
+        
+        /* Fix for Kiwi Browser on Android TV */
+        @media (display-mode: fullscreen) or (display-mode: standalone) {
+            .video-container {
+                height: calc(100vh - 80px) !important; /* Account for system UI */
+                max-height: calc(100vh - 80px) !important;
+            }
+            
+            #playerFrame {
+                max-height: calc(100vh - 80px) !important;
             }
         }
     </style>
@@ -279,12 +300,12 @@
         </button>
     </div>
     
-    <!-- Mode Indicator - MOVED BELOW NAV BAR -->
+    <!-- Mode Indicator - Hidden -->
     <div class="mode-indicator nav-mode" id="modeIndicator">
         Mode: Navigation (Enter: Select Channel)
     </div>
     
-    <!-- Video Player - Takes full remaining height -->
+    <!-- Video Player - Reduced height -->
     <div class="video-container">
         <div class="video-wrapper">
             <iframe id="playerFrame" 
@@ -334,8 +355,7 @@
             enableAutoFocus: true,
             showStatusMessages: true,
             skipAdDelay: 500,
-            skipAdKey: 'Enter',
-            showModeIndicator: false // Turned OFF mode indicator
+            skipAdKey: 'Enter'
         };
         
         // State variables
@@ -345,7 +365,6 @@
         let isVideoPlaying = false;
         let mode = 'navigation';
         let skipAdTimeout = null;
-        let player = null;
         
         // Initialize application
         function init() {
@@ -361,6 +380,34 @@
                 playVideo(channels[0].embedUrl, channels[0].title);
                 showStatus("Auto-playing first channel...", 2000);
             }, 1000);
+            
+            // Adjust for Android TV/Kiwi Browser
+            adjustForAndroidTV();
+        }
+        
+        // Adjust layout for Android TV/Kiwi Browser
+        function adjustForAndroidTV() {
+            const isAndroidTV = /Android|Adr/.test(navigator.userAgent) && 
+                               (navigator.userAgent.includes('TV') || 
+                                navigator.userAgent.includes('AFT') ||
+                                screen.width > 1280);
+            
+            if (isAndroidTV) {
+                // Adjust video container for TV
+                const videoContainer = document.querySelector('.video-container');
+                const playerFrame = document.getElementById('playerFrame');
+                
+                // Use 90% of available height for TV
+                const availableHeight = window.innerHeight - 60; // minus nav bar
+                const tvHeight = Math.min(availableHeight * 0.9, window.innerHeight * 0.85);
+                
+                videoContainer.style.height = tvHeight + 'px';
+                videoContainer.style.maxHeight = tvHeight + 'px';
+                playerFrame.style.maxHeight = tvHeight + 'px';
+                
+                console.log('Android TV detected, setting height to:', tvHeight);
+                showStatus("Android TV mode activated", 2000);
+            }
         }
         
         // Create channel buttons in nav bar
@@ -381,47 +428,12 @@
                 button.onclick = () => {
                     selectButton(index);
                     playVideo(channel.embedUrl, channel.title);
-                    setMode('navigation');
+                    mode = 'navigation';
                 };
                 
                 container.appendChild(button);
                 channelButtons.push(button);
             });
-        }
-        
-        // Set current mode (with optional indicator)
-        function setMode(newMode) {
-            mode = newMode;
-            const indicator = document.getElementById('modeIndicator');
-            
-            if (config.showModeIndicator) {
-                if (newMode === 'navigation') {
-                    indicator.className = 'mode-indicator nav-mode';
-                    indicator.textContent = 'Mode: Navigation (Enter: Select Channel)';
-                    indicator.style.display = 'block';
-                } else if (newMode === 'skip-ad') {
-                    indicator.className = 'mode-indicator skip-mode';
-                    indicator.textContent = 'Mode: Skip Ad (Enter: Skip Ad)';
-                    indicator.style.display = 'block';
-                }
-            } else {
-                indicator.style.display = 'none';
-            }
-            
-            // Clear any existing timeout
-            if (skipAdTimeout) {
-                clearTimeout(skipAdTimeout);
-                skipAdTimeout = null;
-            }
-            
-            // Auto-switch back to navigation mode after some time
-            if (newMode === 'skip-ad') {
-                skipAdTimeout = setTimeout(() => {
-                    if (mode === 'skip-ad') {
-                        setMode('navigation');
-                    }
-                }, 10000);
-            }
         }
         
         // Setup keyboard navigation for TV remote
@@ -434,31 +446,30 @@
                     case 'ArrowLeft':
                         e.preventDefault();
                         moveFocus(-1);
-                        setMode('navigation');
+                        mode = 'navigation';
                         break;
                         
                     case 'ArrowRight':
                         e.preventDefault();
                         moveFocus(1);
-                        setMode('navigation');
+                        mode = 'navigation';
                         break;
                         
                     case 'ArrowUp':
                     case 'ArrowDown':
-                        // Ignore up/down since we have single row
                         e.preventDefault();
                         break;
                         
                     case 'Home':
                         e.preventDefault();
                         focusButton(0);
-                        setMode('navigation');
+                        mode = 'navigation';
                         break;
                         
                     case 'End':
                         e.preventDefault();
                         focusButton(totalButtons - 1);
-                        setMode('navigation');
+                        mode = 'navigation';
                         break;
                 }
                 
@@ -484,8 +495,15 @@
                     e.preventDefault();
                     if (isVideoPlaying) {
                         skipAdvertisement();
-                        setMode('skip-ad');
+                        mode = 'skip-ad';
                     }
+                }
+                
+                // 'S' key to manually toggle skip mode
+                if (e.key === 's' || e.key === 'S') {
+                    e.preventDefault();
+                    mode = mode === 'navigation' ? 'skip-ad' : 'navigation';
+                    showStatus(`Mode: ${mode === 'navigation' ? 'Navigation' : 'Skip Ad'}`, 2000);
                 }
             });
         }
@@ -559,37 +577,33 @@
             isVideoPlaying = false;
             
             // Reset to navigation mode first
-            setMode('navigation');
+            mode = 'navigation';
             
             // Add timestamp to prevent caching
             const timestamp = Date.now();
             const videoId = embedUrl.match(/embed\/([^?]+)/)[1];
             
-            // Use YouTube IFrame API for better control
+            // Use embed URL with autoplay
             const finalUrl = `https://www.youtube.com/embed/${videoId}?` +
                 `autoplay=1&` +
                 `rel=0&` +
                 `modestbranding=1&` +
                 `playsinline=1&` +
-                `enablejsapi=1&` +
-                `origin=${encodeURIComponent(window.location.origin)}&` +
-                `widget_referrer=${encodeURIComponent(window.location.origin)}&` +
+                `enablejsapi=0&` + // Disable API to reduce issues
                 `_=${timestamp}`;
             
             playerFrame.src = finalUrl;
             
             showStatus(`Loading: ${channelTitle}`);
             
-            // When iframe loads, set up player API
+            // When iframe loads
             playerFrame.onload = () => {
-                // Set up player API
-                setupPlayerAPI(playerFrame);
-                
                 // Wait a bit for video to start, then enable skip-ad mode
                 setTimeout(() => {
-                    setMode('skip-ad');
+                    mode = 'skip-ad';
+                    isVideoPlaying = true;
                     showStatus(`Now playing: ${channelTitle}`, 3000);
-                }, 1500);
+                }, 2000);
             };
             
             playerFrame.onerror = () => {
@@ -597,114 +611,67 @@
             };
         }
         
-        // Set up YouTube IFrame API
-        function setupPlayerAPI(iframe) {
-            try {
-                // Load YouTube IFrame API script if not already loaded
-                if (!window.YT) {
-                    const tag = document.createElement('script');
-                    tag.src = "https://www.youtube.com/iframe_api";
-                    const firstScriptTag = document.getElementsByTagName('script')[0];
-                    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-                }
-                
-                // Create player when API is ready
-                window.onYouTubeIframeAPIReady = function() {
-                    player = new YT.Player('playerFrame', {
-                        events: {
-                            'onReady': onPlayerReady,
-                            'onStateChange': onPlayerStateChange
-                        }
-                    });
-                };
-            } catch (error) {
-                console.log("Player API setup error:", error);
-            }
-        }
-        
-        // Player ready callback
-        function onPlayerReady(event) {
-            isVideoPlaying = true;
-            setMode('skip-ad');
-        }
-        
-        // Player state change callback
-        function onPlayerStateChange(event) {
-            if (event.data === YT.PlayerState.PLAYING) {
-                isVideoPlaying = true;
-                setMode('skip-ad');
-            } else if (event.data === YT.PlayerState.PAUSED) {
-                isVideoPlaying = false;
-            }
-        }
-        
-        // Try to skip advertisement using IFrame API
+        // Try to skip advertisement
         function skipAdvertisement() {
-            showStatus("Skipping ad...", 1000);
+            showStatus("Trying to skip ad...", 1000);
             
             try {
-                // Method 1: Try to simulate click on skip button via postMessage
                 const playerFrame = document.getElementById('playerFrame');
                 
-                // This tries to click the skip button by finding it in the iframe
-                const skipScript = `
-                    (function() {
-                        // Try to find and click skip button
-                        var skipButton = document.querySelector('.ytp-ad-skip-button-modern, .ytp-ad-skip-button');
-                        if (skipButton) {
-                            skipButton.click();
-                            return 'skip-clicked';
-                        }
-                        
-                        // Try to skip by seeking
-                        var player = document.querySelector('video');
-                        if (player) {
-                            player.currentTime = player.duration - 1;
-                            return 'seek-skip';
-                        }
-                        
-                        return 'no-skip-found';
-                    })();
-                `;
-                
-                // Try to execute script in iframe
-                try {
-                    const result = playerFrame.contentWindow.eval(skipScript);
-                    if (result === 'skip-clicked') {
-                        showStatus("Ad skipped!", 1500);
-                    } else if (result === 'seek-skip') {
-                        showStatus("Skipped by seeking", 1500);
-                    } else {
-                        showStatus("No skip button found", 1500);
+                // Try multiple skip methods
+                const skipMethods = [
+                    // Method 1: PostMessage to skip ad
+                    () => {
+                        playerFrame.contentWindow.postMessage(JSON.stringify({
+                            event: 'command',
+                            func: 'skipAd',
+                            args: ''
+                        }), '*');
+                    },
+                    
+                    // Method 2: PostMessage to seek forward
+                    () => {
+                        playerFrame.contentWindow.postMessage(JSON.stringify({
+                            event: 'command',
+                            func: 'seekTo',
+                            args: [30, true]
+                        }), '*');
+                    },
+                    
+                    // Method 3: Key press simulation (Enter key for skip)
+                    () => {
+                        const event = new KeyboardEvent('keydown', {
+                            key: 'Enter',
+                            code: 'Enter',
+                            keyCode: 13,
+                            which: 13,
+                            bubbles: true
+                        });
+                        playerFrame.contentWindow.document.dispatchEvent(event);
                     }
-                } catch (e) {
-                    // If eval fails, try postMessage method
-                    playerFrame.contentWindow.postMessage(JSON.stringify({
-                        event: 'command',
-                        func: 'seekTo',
-                        args: [30, true]
-                    }), '*');
-                    
-                    // Also try to play in case video is paused by ad
-                    playerFrame.contentWindow.postMessage(JSON.stringify({
-                        event: 'command',
-                        func: 'playVideo',
-                        args: []
-                    }), '*');
-                    
-                    showStatus("Skip attempted via API", 1500);
-                }
+                ];
+                
+                // Try each method
+                skipMethods.forEach(method => {
+                    try {
+                        method();
+                    } catch (e) {
+                        console.log("Skip method failed:", e);
+                    }
+                });
+                
+                showStatus("Skip attempted", 1500);
                 
             } catch (error) {
                 console.log("Skip ad error:", error);
-                showStatus("Cannot skip ad (browser restriction)", 2000);
+                showStatus("Cannot skip ad", 2000);
             }
             
             // Switch back to navigation mode briefly
-            setMode('navigation');
+            mode = 'navigation';
             setTimeout(() => {
                 if (isVideoPlaying) {
-                    setMode('skip-ad');
+                    mode = 'skip-ad';
                 }
             }, 2000);
         }
@@ -718,9 +685,12 @@
                     const newUrl = currentPlayingUrl + '&t=' + Date.now();
                     document.getElementById('playerFrame').src = newUrl;
                     showStatus("Video refreshed");
-                    setMode('skip-ad');
+                    mode = 'skip-ad';
                 }
             });
+            
+            // Window resize handler for Android TV
+            window.addEventListener('resize', adjustForAndroidTV);
         }
         
         // Show status message
@@ -744,13 +714,6 @@
             document.body.focus();
             document.body.click();
         });
-        
-        // Periodically check if video is playing and switch modes
-        setInterval(() => {
-            if (isVideoPlaying && mode === 'navigation') {
-                setMode('skip-ad');
-            }
-        }, 5000);
     </script>
 </body>
 </html>
