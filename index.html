@@ -29,9 +29,9 @@
         /* Top Navigation Bar - COMPACT height */
         .nav-bar {
             background: #222;
-            padding: 0 8px; /* Reduced padding */
+            padding: 0 8px;
             color: #4CAF50;
-            height: 40px; /* Reduced from 60px */
+            height: 40px;
             min-height: 40px;
             max-height: 40px;
             display: flex;
@@ -45,18 +45,18 @@
         /* Channel buttons in nav bar - COMPACT */
         .channel-buttons {
             display: flex;
-            gap: 6px; /* Reduced gap */
+            gap: 6px;
             overflow-x: auto;
             flex: 1;
             height: 100%;
             align-items: center;
-            padding: 0 8px; /* Reduced padding */
+            padding: 0 8px;
             scrollbar-width: thin;
             scrollbar-color: #4CAF50 #222;
         }
         
         .channel-buttons::-webkit-scrollbar {
-            height: 3px; /* Thinner scrollbar */
+            height: 3px;
         }
         
         .channel-buttons::-webkit-scrollbar-track {
@@ -73,17 +73,17 @@
             background: #333;
             color: #ddd;
             border: 2px solid transparent;
-            padding: 5px 12px; /* Reduced padding */
-            border-radius: 5px; /* Slightly smaller radius */
-            font-size: 14px; /* Slightly smaller font */
+            padding: 5px 12px;
+            border-radius: 5px;
+            font-size: 14px;
             cursor: pointer;
             transition: all 0.2s ease;
             white-space: nowrap;
-            min-width: 90px; /* Reduced min-width */
+            min-width: 90px;
             text-align: center;
             outline: none;
             position: relative;
-            height: 30px; /* Reduced height */
+            height: 30px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -99,8 +99,8 @@
             background: #4CAF50;
             color: white;
             border-color: white;
-            transform: scale(1.03); /* Slightly less scale */
-            box-shadow: 0 0 8px rgba(76, 175, 80, 0.7); /* Smaller shadow */
+            transform: scale(1.03);
+            box-shadow: 0 0 8px rgba(76, 175, 80, 0.7);
             z-index: 10;
         }
         
@@ -115,17 +115,17 @@
             background: #444;
             color: white;
             border: none;
-            padding: 5px 12px; /* Reduced padding */
+            padding: 5px 12px;
             border-radius: 5px;
-            font-size: 12px; /* Smaller font */
+            font-size: 12px;
             cursor: pointer;
             transition: all 0.2s;
-            height: 30px; /* Reduced height */
+            height: 30px;
             display: flex;
             align-items: center;
             justify-content: center;
-            min-width: 80px; /* Reduced min-width */
-            margin-left: 8px; /* Reduced margin */
+            min-width: 80px;
+            margin-left: 8px;
             flex-shrink: 0;
         }
         
@@ -137,13 +137,13 @@
             outline: 2px solid #4CAF50;
         }
         
-        /* Video Container - More space now (40px less for nav) */
+        /* Video Container - More space now */
         .video-container {
             flex: 1;
             background: #000;
             width: 100%;
             min-height: 0;
-            height: calc(100vh - 40px); /* Adjusted for smaller nav */
+            height: calc(100vh - 40px);
             position: relative;
             overflow: hidden;
         }
@@ -170,11 +170,11 @@
         /* Status indicator */
         .status-indicator {
             position: fixed;
-            top: 45px; /* Adjusted for smaller nav */
+            top: 45px;
             right: 10px;
             background: rgba(0,0,0,0.9);
             color: #4CAF50;
-            padding: 10px 14px; /* Slightly smaller */
+            padding: 10px 14px;
             border-radius: 5px;
             font-size: 13px;
             display: none;
@@ -183,7 +183,7 @@
             max-width: 300px;
         }
         
-        /* Focus highlight animation - FIXED BLINKING ISSUE */
+        /* Focus highlight animation */
         @keyframes pulse-smooth {
             0% { box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.7); }
             50% { box-shadow: 0 0 0 6px rgba(76, 175, 80, 0); }
@@ -191,7 +191,7 @@
         }
         
         .channel-btn.focus-highlight {
-            animation: pulse-smooth 2s infinite; /* Slower, smoother animation */
+            animation: pulse-smooth 2s infinite;
         }
         
         /* Responsive adjustments */
@@ -257,7 +257,7 @@
     </style>
 </head>
 <body>
-    <!-- Top Navigation Bar with Channel Buttons - COMPACT -->
+    <!-- Top Navigation Bar with Channel Buttons -->
     <div class="nav-bar">
         <div class="channel-buttons" id="channelButtons">
             <!-- Channel buttons will be added here dynamically -->
@@ -267,7 +267,7 @@
         </button>
     </div>
     
-    <!-- Video Player - More space now -->
+    <!-- Video Player -->
     <div class="video-container">
         <div class="video-wrapper">
             <iframe id="playerFrame" 
@@ -327,7 +327,8 @@
         let isVideoPlaying = false;
         let mode = 'navigation';
         let skipAdTimeout = null;
-        let isAnimating = false; // To prevent blinking issues
+        let isAnimating = false;
+        let hasAutoPlayed = false; // Track if auto-play has already happened
         
         // Initialize application
         function init() {
@@ -335,14 +336,59 @@
             setupKeyboardNavigation();
             setupEventListeners();
             focusButton(0);
-            showStatus("Ready. Use arrow keys to navigate channels.");
+            showStatus("Ready. Auto-playing first channel in 2 seconds...", 2000);
             
-            // AUTO-PLAY FIRST CHANNEL ON LOAD
+            // SIMULATE ENTER KEY PRESS after everything loads
             setTimeout(() => {
-                selectButton(0);
-                playVideo(channels[0].embedUrl, channels[0].title);
-                showStatus("Auto-playing first channel...", 2000);
-            }, 1000);
+                simulateEnterKeyPress();
+            }, 2000);
+        }
+        
+        // Simulate Enter key press to trigger autoplay
+        function simulateEnterKeyPress() {
+            if (hasAutoPlayed) return; // Don't auto-play more than once
+            
+            showStatus("Auto-playing first channel...", 2000);
+            
+            // First, ensure first button is focused
+            focusButton(0);
+            selectButton(0);
+            
+            // Wait a bit for focus to settle, then simulate Enter
+            setTimeout(() => {
+                // Create and dispatch Enter key event
+                const enterEvent = new KeyboardEvent('keydown', {
+                    key: 'Enter',
+                    code: 'Enter',
+                    keyCode: 13,
+                    which: 13,
+                    bubbles: true,
+                    cancelable: true
+                });
+                
+                // Also create keyup event
+                const enterUpEvent = new KeyboardEvent('keyup', {
+                    key: 'Enter',
+                    code: 'Enter',
+                    keyCode: 13,
+                    which: 13,
+                    bubbles: true,
+                    cancelable: true
+                });
+                
+                // Dispatch both events
+                document.dispatchEvent(enterEvent);
+                document.dispatchEvent(enterUpEvent);
+                
+                // Also click the button directly as backup
+                if (channelButtons[0]) {
+                    channelButtons[0].click();
+                }
+                
+                hasAutoPlayed = true;
+                console.log("Auto-play simulated with Enter key press");
+                
+            }, 300);
         }
         
         // Create channel buttons in nav bar
@@ -452,35 +498,30 @@
             showStatus(`Selected: ${channels[newIndex].title}`, 1000);
         }
         
-        // Focus a specific button - FIXED BLINKING ISSUE
+        // Focus a specific button
         function focusButton(index) {
             if (channelButtons.length === 0) return;
             
-            // Prevent rapid animations causing blinking
             if (isAnimating) return;
             isAnimating = true;
             
-            // Remove focus from all buttons
             channelButtons.forEach(btn => {
                 btn.classList.remove('focus-highlight');
                 btn.blur();
             });
             
-            // Ensure index is within bounds
             if (index < 0) index = 0;
             if (index >= channelButtons.length) index = channelButtons.length - 1;
             
             currentFocusIndex = index;
             const button = channelButtons[index];
             
-            // Add focus highlight with delay to prevent blinking
             setTimeout(() => {
                 button.classList.add('focus-highlight');
                 button.focus({preventScroll: false});
                 isAnimating = false;
             }, 50);
             
-            // Scroll button into view
             button.scrollIntoView({
                 behavior: 'smooth',
                 block: 'nearest',
@@ -488,17 +529,15 @@
             });
         }
         
-        // Select button (visual feedback) - FIXED BLINKING ISSUE
+        // Select button (visual feedback)
         function selectButton(index) {
             if (channelButtons.length === 0) return;
             
-            // Remove active class from all
             channelButtons.forEach(btn => btn.classList.remove('active'));
             
             if (channelButtons[index]) {
                 channelButtons[index].classList.add('active');
                 
-                // Don't remove focus-highlight immediately, smoother transition
                 setTimeout(() => {
                     if (channelButtons[index]) {
                         channelButtons[index].classList.add('focus-highlight');
@@ -514,19 +553,27 @@
             currentPlayingUrl = embedUrl;
             isVideoPlaying = false;
             
-            // Reset to navigation mode first
             mode = 'navigation';
             
-            // Add timestamp to prevent caching
-            const timestamp = Date.now();
-            const videoId = embedUrl.match(/embed\/([^?]+)/)[1];
+            // Extract video ID
+            const videoIdMatch = embedUrl.match(/embed\/([^?]+)/);
+            if (!videoIdMatch) {
+                showStatus(`Invalid URL: ${embedUrl}`, 3000);
+                return;
+            }
             
-            // Use embed URL with autoplay
+            const videoId = videoIdMatch[1];
+            
+            // Use YouTube embed URL with autoplay
+            const timestamp = Date.now();
             const finalUrl = `https://www.youtube.com/embed/${videoId}?` +
                 `autoplay=1&` +
+                `mute=0&` + // Unmuted
                 `rel=0&` +
                 `modestbranding=1&` +
                 `playsinline=1&` +
+                `enablejsapi=1&` + // Enable API
+                `origin=${encodeURIComponent(window.location.origin)}&` +
                 `_=${timestamp}`;
             
             playerFrame.src = finalUrl;
@@ -535,7 +582,20 @@
             
             // When iframe loads
             playerFrame.onload = () => {
-                // Wait a bit for video to start, then enable skip-ad mode
+                // Try to trigger play via postMessage
+                setTimeout(() => {
+                    try {
+                        playerFrame.contentWindow.postMessage(JSON.stringify({
+                            event: 'command',
+                            func: 'playVideo',
+                            args: ''
+                        }), '*');
+                    } catch (e) {
+                        // Silently fail
+                    }
+                }, 500);
+                
+                // Switch to skip-ad mode
                 setTimeout(() => {
                     mode = 'skip-ad';
                     isVideoPlaying = true;
@@ -555,43 +615,52 @@
             try {
                 const playerFrame = document.getElementById('playerFrame');
                 
-                // Try multiple skip methods
-                const skipMethods = [
-                    // Method 1: PostMessage to skip ad
-                    () => {
-                        playerFrame.contentWindow.postMessage(JSON.stringify({
-                            event: 'command',
-                            func: 'skipAd',
-                            args: ''
-                        }), '*');
-                    },
-                    
-                    // Method 2: PostMessage to seek forward
-                    () => {
-                        playerFrame.contentWindow.postMessage(JSON.stringify({
-                            event: 'command',
-                            func: 'seekTo',
-                            args: [30, true]
-                        }), '*');
-                    }
-                ];
-                
-                // Try each method
-                skipMethods.forEach(method => {
+                // Try to find and click skip button via script injection
+                const skipScript = `
                     try {
-                        method();
-                    } catch (e) {
-                        // Silently fail
+                        // Look for skip button
+                        const skipBtn = document.querySelector('.ytp-ad-skip-button-modern, .ytp-ad-skip-button, .ytp-ad-skip-button-container button');
+                        if (skipBtn) {
+                            skipBtn.click();
+                            return true;
+                        }
+                        
+                        // Try to seek forward if no skip button
+                        const video = document.querySelector('video');
+                        if (video) {
+                            video.currentTime = video.duration - 1;
+                            return true;
+                        }
+                        
+                        return false;
+                    } catch(e) {
+                        return false;
                     }
-                });
+                `;
                 
-                showStatus("Skip attempted", 1500);
+                // Execute script in iframe
+                try {
+                    const result = playerFrame.contentWindow.eval(skipScript);
+                    if (result) {
+                        showStatus("Ad skipped!", 1500);
+                    } else {
+                        showStatus("No skip button found", 1500);
+                    }
+                } catch (e) {
+                    // Fallback to postMessage
+                    playerFrame.contentWindow.postMessage(JSON.stringify({
+                        event: 'command',
+                        func: 'seekTo',
+                        args: [30, true]
+                    }), '*');
+                    
+                    showStatus("Skip attempted via API", 1500);
+                }
                 
             } catch (error) {
                 showStatus("Cannot skip ad", 2000);
             }
             
-            // Switch back to navigation mode briefly
             mode = 'navigation';
             setTimeout(() => {
                 if (isVideoPlaying) {
@@ -605,12 +674,17 @@
             // Refresh button
             document.getElementById('refreshBtn').addEventListener('click', () => {
                 if (currentPlayingUrl) {
-                    // Refresh current video
                     const newUrl = currentPlayingUrl + '&t=' + Date.now();
                     document.getElementById('playerFrame').src = newUrl;
                     showStatus("Video refreshed");
                     mode = 'skip-ad';
                 }
+            });
+            
+            // Add click event to body to satisfy autoplay policies
+            document.body.addEventListener('click', () => {
+                // This helps satisfy user interaction requirement for autoplay
+                console.log("User interaction detected");
             });
         }
         
@@ -630,10 +704,19 @@
         // Initialize on page load
         document.addEventListener('DOMContentLoaded', init);
         
-        // Auto-focus on body for keyboard control
+        // Auto-focus and simulate click to satisfy autoplay policies
         window.addEventListener('load', () => {
             document.body.focus();
+            
+            // Click the body to satisfy user interaction requirement
             document.body.click();
+            
+            // Also click first button as backup
+            setTimeout(() => {
+                if (channelButtons[0]) {
+                    channelButtons[0].click();
+                }
+            }, 500);
         });
     </script>
 </body>
