@@ -177,28 +177,25 @@
             animation: pulse 1.5s infinite;
         }
         
-        /* Loading Spinner */
-        .loading-spinner {
+        /* Mode Indicator */
+        .mode-indicator {
             position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            display: none;
-            z-index: 50;
+            top: 10px;
+            left: 10px;
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 12px;
+            z-index: 100;
         }
         
-        .spinner {
-            width: 50px;
-            height: 50px;
-            border: 5px solid #333;
-            border-top: 5px solid #4CAF50;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
+        .mode-indicator.nav-mode {
+            border: 2px solid #4CAF50;
         }
         
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        .mode-indicator.skip-mode {
+            border: 2px solid #FF9800;
         }
         
         /* Responsive adjustments */
@@ -236,11 +233,13 @@
         <!-- Buttons will be added here -->
     </div>
     
+    <!-- Mode Indicator -->
+    <div class="mode-indicator nav-mode" id="modeIndicator">
+        Mode: Navigation (Enter: Select Channel)
+    </div>
+    
     <!-- Video Player -->
     <div class="video-container">
-        <div class="loading-spinner" id="loadingSpinner">
-            <div class="spinner"></div>
-        </div>
         <div class="video-wrapper">
             <iframe id="playerFrame" 
                 src=""
@@ -256,8 +255,7 @@
     <div class="status-indicator" id="statusIndicator"></div>
 
     <script>
-        // News Channels with CORRECT embed URLs from YouTube's "Share → Embed"
-        // Format: https://www.youtube.com/embed/VIDEO_ID?autoplay=1&[other params]
+        // News Channels with embed URLs
         const channels = [
             {
                 title: "92 News",
@@ -289,13 +287,18 @@
         const config = {
             columns: 4,
             enableAutoFocus: true,
-            showStatusMessages: true
+            showStatusMessages: true,
+            skipAdDelay: 500, // Delay before Enter becomes skip ad
+            skipAdKey: 'Enter'
         };
         
         // State variables
         let currentFocusIndex = 0;
         let buttonElements = [];
         let currentPlayingUrl = '';
+        let isVideoPlaying = false;
+        let mode = 'navigation'; // 'navigation' or 'skip-ad'
+        let skipAdTimeout = null;
         
         // Initialize application
         function init() {
@@ -305,11 +308,12 @@
             focusButton(0);
             showStatus("Ready. Use arrow keys to navigate channels.");
             
-            // Auto-play first channel
+            // AUTO-PLAY FIRST CHANNEL ON LOAD
             setTimeout(() => {
-                playVideo(channels[0].embedUrl, channels[0].title);
                 selectButton(0);
-            }, 500);
+                playVideo(channels[0].embedUrl, channels[0].title);
+                showStatus("Auto-playing first channel...", 2000);
+            }, 1000); // 1 second delay for page to fully load
         }
         
         // Create channel buttons
@@ -330,6 +334,7 @@
                 button.onclick = () => {
                     selectButton(index);
                     playVideo(channel.embedUrl, channel.title);
+                    setMode('navigation');
                 };
                 
                 container.appendChild(button);
@@ -337,59 +342,103 @@
             });
         }
         
+        // Set current mode
+        function setMode(newMode) {
+            mode = newMode;
+            const indicator = document.getElementById('modeIndicator');
+            
+            if (newMode === 'navigation') {
+                indicator.className = 'mode-indicator nav-mode';
+                indicator.textContent = 'Mode: Navigation (Enter: Select Channel)';
+            } else if (newMode === 'skip-ad') {
+                indicator.className = 'mode-indicator skip-mode';
+                indicator.textContent = 'Mode: Skip Ad (Enter: Skip Ad)';
+            }
+            
+            // Clear any existing timeout
+            if (skipAdTimeout) {
+                clearTimeout(skipAdTimeout);
+                skipAdTimeout = null;
+            }
+            
+            // Auto-switch back to navigation mode after some time
+            if (newMode === 'skip-ad') {
+                skipAdTimeout = setTimeout(() => {
+                    if (mode === 'skip-ad') {
+                        setMode('navigation');
+                    }
+                }, 10000); // 10 seconds
+            }
+        }
+        
         // Setup keyboard navigation for TV remote
         function setupKeyboardNavigation() {
             document.addEventListener('keydown', (e) => {
                 const totalButtons = buttonElements.length;
                 
+                // Always allow arrow key navigation
                 switch(e.key) {
                     case 'ArrowUp':
                         e.preventDefault();
                         moveFocus(-config.columns);
+                        setMode('navigation');
                         break;
                         
                     case 'ArrowDown':
                         e.preventDefault();
                         moveFocus(config.columns);
+                        setMode('navigation');
                         break;
                         
                     case 'ArrowLeft':
                         e.preventDefault();
                         moveFocus(-1);
+                        setMode('navigation');
                         break;
                         
                     case 'ArrowRight':
                         e.preventDefault();
                         moveFocus(1);
-                        break;
-                        
-                    case 'Enter':
-                        e.preventDefault();
-                        selectButton(currentFocusIndex);
-                        const channel = channels[currentFocusIndex];
-                        if (channel) {
-                            playVideo(channel.embedUrl, channel.title);
-                        }
-                        break;
-                        
-                    case ' ':
-                        e.preventDefault();
-                        showStatus("Press Enter to play selected channel");
+                        setMode('navigation');
                         break;
                         
                     case 'Home':
                         e.preventDefault();
                         focusButton(0);
+                        setMode('navigation');
                         break;
                         
                     case 'End':
                         e.preventDefault();
                         focusButton(totalButtons - 1);
+                        setMode('navigation');
                         break;
-                        
-                    case 'Escape':
-                        // Mute/unmute or other control
-                        break;
+                }
+                
+                // ENTER key behavior based on mode
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    
+                    if (mode === 'navigation') {
+                        // Navigation mode: Select and play channel
+                        selectButton(currentFocusIndex);
+                        const channel = channels[currentFocusIndex];
+                        if (channel) {
+                            playVideo(channel.embedUrl, channel.title);
+                        }
+                    } else if (mode === 'skip-ad') {
+                        // Skip Ad mode: Try to skip ad
+                        skipAdvertisement();
+                    }
+                }
+                
+                // SPACE key for quick skip
+                if (e.key === ' ') {
+                    e.preventDefault();
+                    if (isVideoPlaying) {
+                        skipAdvertisement();
+                        setMode('skip-ad');
+                    }
                 }
             });
         }
@@ -400,8 +449,28 @@
             document.getElementById('refreshBtn').addEventListener('click', () => {
                 if (currentPlayingUrl) {
                     // Refresh current video
-                    document.getElementById('playerFrame').src = currentPlayingUrl + '&t=' + Date.now();
+                    const newUrl = currentPlayingUrl + '&t=' + Date.now();
+                    document.getElementById('playerFrame').src = newUrl;
                     showStatus("Video refreshed");
+                    setMode('skip-ad');
+                }
+            });
+            
+            // Listen for video play events
+            window.addEventListener('message', (event) => {
+                // Listen for YouTube player state changes
+                if (event.data && event.data.event === 'infoDelivery') {
+                    if (event.data.info && event.data.info.playerState) {
+                        const playerState = event.data.info.playerState;
+                        
+                        if (playerState === 1) { // Playing
+                            isVideoPlaying = true;
+                            // Switch to skip-ad mode when video starts playing
+                            setTimeout(() => setMode('skip-ad'), config.skipAdDelay);
+                        } else if (playerState === 2) { // Paused
+                            isVideoPlaying = false;
+                        }
+                    }
                 }
             });
         }
@@ -430,7 +499,7 @@
             }
             
             focusButton(newIndex);
-            showStatus(`Selected: ${channels[newIndex].title}`);
+            showStatus(`Selected: ${channels[newIndex].title}`, 1000);
         }
         
         // Focus a specific button
@@ -476,23 +545,17 @@
             }
         }
         
-        // Play video function - USING DIRECT EMBED URL
+        // Play video function
         function playVideo(embedUrl, channelTitle) {
             const playerFrame = document.getElementById('playerFrame');
-            const loadingSpinner = document.getElementById('loadingSpinner');
             
-            // Show loading spinner
-            loadingSpinner.style.display = 'block';
             currentPlayingUrl = embedUrl;
+            isVideoPlaying = false;
             
-            // Store current URL for refresh
-            currentPlayingUrl = embedUrl.split('?')[0] + '?autoplay=1&rel=0&modestbranding=1&playsinline=1';
+            // Reset to navigation mode first
+            setMode('navigation');
             
-            // IMPORTANT: For autoplay to work, we need to:
-            // 1. Use the exact embed URL from YouTube
-            // 2. Add timestamp to prevent caching issues
-            // 3. Ensure the iframe has proper permissions
-            
+            // Add timestamp to prevent caching
             const timestamp = Date.now();
             const finalUrl = embedUrl.includes('?') 
                 ? `${embedUrl}&_=${timestamp}`
@@ -502,56 +565,72 @@
             
             showStatus(`Loading: ${channelTitle}`);
             
-            // Hide spinner after video loads
+            // When video loads, switch to skip-ad mode after a delay
             playerFrame.onload = () => {
-                loadingSpinner.style.display = 'none';
-                showStatus(`Now playing: ${channelTitle}`, 3000);
+                // Wait a bit for video to start, then enable skip-ad mode
+                setTimeout(() => {
+                    setMode('skip-ad');
+                    showStatus(`Now playing: ${channelTitle}`, 3000);
+                }, 1500);
             };
             
             playerFrame.onerror = () => {
-                loadingSpinner.style.display = 'none';
-                showStatus(`Error loading: ${channelTitle}. Trying alternative method...`, 3000);
-                
-                // Try alternative method
-                setTimeout(() => {
-                    tryAlternativePlayback(channelTitle, embedUrl);
-                }, 1000);
+                showStatus(`Error loading: ${channelTitle}`, 3000);
             };
         }
         
-        // Alternative playback method
-        function tryAlternativePlayback(channelTitle, embedUrl) {
+        // Try to skip advertisement
+        function skipAdvertisement() {
             const playerFrame = document.getElementById('playerFrame');
             
-            // Extract video ID from embed URL
-            const videoIdMatch = embedUrl.match(/embed\/([^?]+)/);
-            if (videoIdMatch) {
-                const videoId = videoIdMatch[1];
+            showStatus("Attempting to skip ad...", 1000);
+            
+            try {
+                // Method 1: Try to send skip command via postMessage
+                playerFrame.contentWindow.postMessage(
+                    JSON.stringify({
+                        event: 'command',
+                        func: 'skipAd',
+                        args: ''
+                    }), 
+                    '*'
+                );
                 
-                // Try different URL formats
-                const alternativeUrls = [
-                    // Format 1: Standard embed
-                    `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&playsinline=1`,
-                    // Format 2: With modest branding
-                    `https://www.youtube.com/embed/${videoId}?autoplay=1&modestbranding=1&rel=0`,
-                    // Format 3: No-cookie version
-                    `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&rel=0`,
-                    // Format 4: With origin parameter
-                    `https://www.youtube.com/embed/${videoId}?autoplay=1&origin=${encodeURIComponent(window.location.origin)}`
-                ];
+                // Method 2: Try to click skip button via simulated click
+                playerFrame.contentWindow.postMessage(
+                    JSON.stringify({
+                        event: 'command',
+                        func: 'playVideo',
+                        args: ''
+                    }), 
+                    '*'
+                );
                 
-                let currentTry = 0;
+                // Method 3: Try to seek forward (skip 30 seconds)
+                playerFrame.contentWindow.postMessage(
+                    JSON.stringify({
+                        event: 'command',
+                        func: 'seekTo',
+                        args: [30, true]
+                    }), 
+                    '*'
+                );
                 
-                function tryNextUrl() {
-                    if (currentTry < alternativeUrls.length) {
-                        playerFrame.src = alternativeUrls[currentTry] + '&_=' + Date.now();
-                        currentTry++;
-                        setTimeout(tryNextUrl, 2000);
-                    }
-                }
+                // Show feedback
+                showStatus("Ad skip attempted", 1000);
                 
-                tryNextUrl();
+            } catch (error) {
+                console.log("Skip ad error:", error);
+                showStatus("Cannot skip ad (browser restriction)", 2000);
             }
+            
+            // Switch back to navigation mode briefly
+            setMode('navigation');
+            setTimeout(() => {
+                if (isVideoPlaying) {
+                    setMode('skip-ad');
+                }
+            }, 2000);
         }
         
         // Show status message
@@ -573,17 +652,18 @@
         // Auto-focus on body for keyboard control
         window.addEventListener('load', () => {
             document.body.focus();
+            
+            // Simulate a click to enable autoplay (required by some browsers)
+            document.body.click();
         });
         
-        // Listen for iframe messages (for debugging)
-        window.addEventListener('message', (event) => {
-            console.log('Iframe message:', event.data);
-            
-            // Handle YouTube player events if needed
-            if (event.data && event.data.event === 'infoDelivery') {
-                // YouTube player info
+        // Periodically check if video is playing and switch modes
+        setInterval(() => {
+            if (isVideoPlaying && mode === 'navigation') {
+                // If video is playing but we're in navigation mode, switch to skip-ad
+                setMode('skip-ad');
             }
-        });
+        }, 5000);
     </script>
 </body>
 </html>
