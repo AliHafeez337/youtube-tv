@@ -10,7 +10,7 @@
         }
         
         html, body {
-            height: 90vh !important; /* FORCE 90vh maximum */
+            height: 95vh !important; /* FORCE 95vh maximum */
             width: 100%;
             overflow: hidden;
         }
@@ -21,15 +21,15 @@
             font-family: Arial, sans-serif;
             display: flex;
             flex-direction: column;
-            height: 90vh !important; /* ENFORCE 90vh */
-            max-height: 90vh !important;
+            height: 95vh !important; /* ENFORCE 95vh */
+            max-height: 95vh !important;
             overflow: hidden;
         }
         
         /* Top Navigation Bar - GOOD for TV */
         .nav-bar {
             background: #222;
-            padding: 0 10px;
+            /* padding: 0 10px; */
             color: #4CAF50;
             height: 45px; /* Good size for TV remote */
             min-height: 45px;
@@ -50,7 +50,7 @@
             flex: 1;
             height: 100%;
             align-items: center;
-            padding: 0 10px;
+            /* padding: 0 10px; */
             scrollbar-width: thin;
             scrollbar-color: #4CAF50 #222;
         }
@@ -73,7 +73,7 @@
             background: #333;
             color: #ddd;
             border: 3px solid transparent;
-            padding: 10px 18px;
+            padding: 8px 18px;
             border-radius: 8px;
             font-size: 16px; /* Bigger for TV viewing distance */
             font-weight: bold;
@@ -139,19 +139,19 @@
             transform: scale(1.1);
         }
         
-        /* Video Container - FIXED for 90vh TV */
+        /* Video Container - FIXED for 95vh TV */
         .video-container {
             flex: 1;
             background: #000;
             width: 100%;
             min-height: 0;
-            height: calc(90vh - 55px) !important; /* ENFORCE 90vh - nav */
-            max-height: calc(90vh - 55px) !important;
+            height: calc(95vh - 55px) !important; /* ENFORCE 95vh - nav */
+            max-height: calc(95vh - 55px) !important;
             position: relative;
             overflow: hidden;
         }
         
-        /* Video Player - FITS within 90vh */
+        /* Video Player - FITS within 95vh */
         .video-wrapper {
             width: 100%;
             height: 100%;
@@ -212,7 +212,7 @@
                 height: 40px;
                 font-size: 18px;
                 min-width: 120px;
-                padding: 12px 20px;
+                /* padding: 2px 5px; */
             }
             
             .refresh-btn {
@@ -222,8 +222,8 @@
             }
             
             .video-container {
-                height: calc(90vh - 60px) !important;
-                max-height: calc(90vh - 60px) !important;
+                height: calc(95vh - 60px) !important;
+                max-height: calc(95vh - 60px) !important;
             }
             
             .status-indicator {
@@ -255,7 +255,7 @@
                 height: 35px;
                 font-size: 14px;
                 min-width: 100px;
-                padding: 8px 15px;
+                padding: 3px 15px;
             }
             
             .refresh-btn {
@@ -277,7 +277,7 @@
         </button>
     </div>
     
-    <!-- Video Player - STRICTLY 90vh - 55px -->
+    <!-- Video Player - STRICTLY 95vh - 55px -->
     <div class="video-container">
         <div class="video-wrapper">
             <iframe id="playerFrame" 
@@ -301,7 +301,7 @@
                 embedUrl: "https://www.youtube.com/embed/8uh7YorHaa8?autoplay=1&rel=0&modestbranding=1&playsinline=1"
             },
             {
-                title: "AAJ News",
+                title: "Aaj News",
                 embedUrl: "https://www.youtube.com/embed/KH36EOuT7Rw?autoplay=1&rel=0&modestbranding=1&playsinline=1"
             },
             {
@@ -309,7 +309,11 @@
                 embedUrl: "https://www.youtube.com/embed/ifgOMEerYQI?autoplay=1&rel=0&modestbranding=1&playsinline=1"
             },
             {
-                title: "24 News Live",
+                title: "Ary News",
+                embedUrl: "https://www.youtube.com/embed/RqUZ2Fv9l8w?autoplay=1&rel=0&modestbranding=1&playsinline=1"
+            },
+            {
+                title: "24 News",
                 embedUrl: "https://www.youtube.com/embed/l18WSuRMtHo?autoplay=1&rel=0&modestbranding=1&playsinline=1"
             },
             {
@@ -378,13 +382,13 @@
             
             if (isTV) {
                 console.log("TV mode detected");
-                // Force 90vh maximum
-                document.body.style.height = "90vh";
-                document.body.style.maxHeight = "90vh";
+                // Force 95vh maximum
+                document.body.style.height = "95vh";
+                document.body.style.maxHeight = "95vh";
                 
                 const videoContainer = document.querySelector('.video-container');
-                videoContainer.style.height = `calc(90vh - 55px)`;
-                videoContainer.style.maxHeight = `calc(90vh - 55px)`;
+                videoContainer.style.height = `calc(95vh - 55px)`;
+                videoContainer.style.maxHeight = `calc(95vh - 55px)`;
                 
                 showStatus("TV Mode Activated", 2000);
             }
