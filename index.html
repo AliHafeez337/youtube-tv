@@ -9,136 +9,148 @@
             box-sizing: border-box;
         }
         
+        html, body {
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
+        }
+        
         body {
             background: #111;
             color: white;
             font-family: Arial, sans-serif;
-            height: 100vh;
             display: flex;
             flex-direction: column;
-            overflow: hidden;
+            height: 100vh;
+            max-height: 100vh;
         }
         
-        /* Top Navigation Bar */
-        .nav-info {
+        /* Top Navigation Bar - Fixed height */
+        .nav-bar {
             background: #222;
-            padding: 12px 20px;
+            padding: 0 10px;
             color: #4CAF50;
-            font-size: 16px;
-            text-align: center;
-            border-bottom: 2px solid #4CAF50;
+            height: 60px;
+            min-height: 60px;
+            max-height: 60px;
             display: flex;
+            align-items: center;
             justify-content: space-between;
-            align-items: center;
+            border-bottom: 2px solid #4CAF50;
+            flex-shrink: 0;
         }
         
-        .nav-controls {
+        /* Channel buttons in nav bar */
+        .channel-buttons {
             display: flex;
-            gap: 10px;
-        }
-        
-        .nav-btn {
-            background: #444;
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 14px;
-            transition: all 0.2s;
-        }
-        
-        .nav-btn:hover {
-            background: #555;
-        }
-        
-        .nav-btn:focus {
-            outline: 2px solid #4CAF50;
-        }
-        
-        /* Button Container - TOP */
-        .button-container {
-            background: #222;
-            padding: 20px;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 15px;
+            gap: 8px;
             overflow-x: auto;
-            max-height: 30vh;
-            min-height: 120px;
+            flex: 1;
+            height: 100%;
             align-items: center;
-            justify-content: center;
-            scroll-behavior: smooth;
+            padding: 0 10px;
+            scrollbar-width: thin;
+            scrollbar-color: #4CAF50 #222;
         }
         
-        .button-container::-webkit-scrollbar {
-            height: 6px;
+        .channel-buttons::-webkit-scrollbar {
+            height: 4px;
         }
         
-        .button-container::-webkit-scrollbar-track {
+        .channel-buttons::-webkit-scrollbar-track {
             background: #222;
         }
         
-        .button-container::-webkit-scrollbar-thumb {
+        .channel-buttons::-webkit-scrollbar-thumb {
             background: #4CAF50;
-            border-radius: 3px;
+            border-radius: 2px;
         }
         
-        /* Video Buttons with Focus States */
-        .video-btn {
+        /* Channel button styles */
+        .channel-btn {
             background: #333;
             color: #ddd;
-            border: 3px solid transparent;
-            padding: 15px 20px;
-            border-radius: 8px;
-            font-size: 18px;
+            border: 2px solid transparent;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 16px;
             cursor: pointer;
             transition: all 0.2s ease;
             white-space: nowrap;
-            min-width: 160px;
+            min-width: 100px;
             text-align: center;
             outline: none;
             position: relative;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         
-        .video-btn:hover {
+        .channel-btn:hover {
             background: #444;
             color: white;
         }
         
-        .video-btn:focus {
+        .channel-btn:focus {
             background: #4CAF50;
             color: white;
             border-color: white;
             transform: scale(1.05);
-            box-shadow: 0 0 15px rgba(76, 175, 80, 0.7);
+            box-shadow: 0 0 10px rgba(76, 175, 80, 0.7);
             z-index: 10;
         }
         
-        .video-btn.active {
+        .channel-btn.active {
             background: #2E7D32;
             color: white;
             border-color: #81C784;
         }
         
-        /* Video Player Container - BOTTOM */
+        /* Refresh button */
+        .refresh-btn {
+            background: #444;
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 6px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 100px;
+            margin-left: 10px;
+        }
+        
+        .refresh-btn:hover {
+            background: #555;
+        }
+        
+        .refresh-btn:focus {
+            outline: 2px solid #4CAF50;
+        }
+        
+        /* Video Container - Takes all remaining space */
         .video-container {
             flex: 1;
             background: #000;
             display: flex;
             flex-direction: column;
-            padding: 0;
             width: 100%;
+            height: calc(100vh - 60px);
+            min-height: 0;
             position: relative;
         }
         
         /* Video Player */
         .video-wrapper {
-            flex: 1;
-            position: relative;
             width: 100%;
             height: 100%;
             background: #000;
+            position: relative;
         }
         
         #playerFrame {
@@ -153,7 +165,7 @@
         /* Status indicator */
         .status-indicator {
             position: fixed;
-            top: 10px;
+            top: 70px;
             right: 10px;
             background: rgba(0,0,0,0.9);
             color: #4CAF50;
@@ -173,7 +185,7 @@
             100% { box-shadow: 0 0 0 0 rgba(76, 175, 80, 0); }
         }
         
-        .video-btn.focus-highlight {
+        .channel-btn.focus-highlight {
             animation: pulse 1.5s infinite;
         }
         
@@ -199,38 +211,62 @@
         }
         
         /* Responsive adjustments */
-        @media (max-height: 600px) {
-            .button-container {
-                max-height: 40vh;
-                padding: 10px;
-                gap: 10px;
-            }
-            
-            .video-btn {
-                padding: 12px 16px;
-                font-size: 16px;
-                min-width: 140px;
-            }
-            
-            .nav-info {
+        @media (max-width: 768px) {
+            .channel-btn {
+                min-width: 80px;
                 font-size: 14px;
-                padding: 10px 15px;
+                padding: 8px 12px;
+            }
+            
+            .refresh-btn {
+                min-width: 80px;
+                font-size: 12px;
+                padding: 8px 12px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .nav-bar {
+                height: 50px;
+                min-height: 50px;
+                max-height: 50px;
+            }
+            
+            .video-container {
+                height: calc(100vh - 50px);
+            }
+            
+            .channel-btn {
+                min-width: 70px;
+                font-size: 12px;
+                padding: 6px 10px;
+                height: 35px;
+            }
+            
+            .refresh-btn {
+                min-width: 70px;
+                font-size: 12px;
+                padding: 6px 10px;
+                height: 35px;
+            }
+            
+            .status-indicator {
+                top: 60px;
+                font-size: 12px;
+                padding: 8px 12px;
             }
         }
     </style>
 </head>
 <body>
-    <!-- Navigation Bar -->
-    <div class="nav-info">
-        <div>📺 News Channel Player</div>
-        <div class="nav-controls">
-            <button class="nav-btn" id="refreshBtn">🔄 Refresh</button>
+    <!-- Top Navigation Bar with Channel Buttons -->
+    <div class="nav-bar">
+        <div class="channel-buttons" id="channelButtons">
+            <!-- Channel buttons will be added here dynamically -->
         </div>
-    </div>
-    
-    <!-- Channel Buttons -->
-    <div class="button-container" id="buttonContainer">
-        <!-- Buttons will be added here -->
+        <button class="refresh-btn" id="refreshBtn">
+            🔄 Refresh
+        </button>
     </div>
     
     <!-- Mode Indicator -->
@@ -238,7 +274,7 @@
         Mode: Navigation (Enter: Select Channel)
     </div>
     
-    <!-- Video Player -->
+    <!-- Video Player - Takes full remaining height -->
     <div class="video-container">
         <div class="video-wrapper">
             <iframe id="playerFrame" 
@@ -285,24 +321,23 @@
         
         // Configuration
         const config = {
-            columns: 4,
             enableAutoFocus: true,
             showStatusMessages: true,
-            skipAdDelay: 500, // Delay before Enter becomes skip ad
+            skipAdDelay: 500,
             skipAdKey: 'Enter'
         };
         
         // State variables
         let currentFocusIndex = 0;
-        let buttonElements = [];
+        let channelButtons = [];
         let currentPlayingUrl = '';
         let isVideoPlaying = false;
-        let mode = 'navigation'; // 'navigation' or 'skip-ad'
+        let mode = 'navigation';
         let skipAdTimeout = null;
         
         // Initialize application
         function init() {
-            createButtons();
+            createChannelButtons();
             setupKeyboardNavigation();
             setupEventListeners();
             focusButton(0);
@@ -313,18 +348,18 @@
                 selectButton(0);
                 playVideo(channels[0].embedUrl, channels[0].title);
                 showStatus("Auto-playing first channel...", 2000);
-            }, 1000); // 1 second delay for page to fully load
+            }, 1000);
         }
         
-        // Create channel buttons
-        function createButtons() {
-            const container = document.getElementById('buttonContainer');
+        // Create channel buttons in nav bar
+        function createChannelButtons() {
+            const container = document.getElementById('channelButtons');
             container.innerHTML = '';
-            buttonElements = [];
+            channelButtons = [];
             
             channels.forEach((channel, index) => {
                 const button = document.createElement('button');
-                button.className = 'video-btn';
+                button.className = 'channel-btn';
                 button.textContent = channel.title;
                 button.dataset.index = index;
                 button.dataset.embedUrl = channel.embedUrl;
@@ -338,7 +373,7 @@
                 };
                 
                 container.appendChild(button);
-                buttonElements.push(button);
+                channelButtons.push(button);
             });
         }
         
@@ -367,39 +402,33 @@
                     if (mode === 'skip-ad') {
                         setMode('navigation');
                     }
-                }, 10000); // 10 seconds
+                }, 10000);
             }
         }
         
-        // Setup keyboard navigation for TV remote
+        // Setup keyboard navigation for TV remote - SIMPLIFIED FOR SINGLE ROW
         function setupKeyboardNavigation() {
             document.addEventListener('keydown', (e) => {
-                const totalButtons = buttonElements.length;
+                const totalButtons = channelButtons.length;
                 
-                // Always allow arrow key navigation
+                // SIMPLE LEFT/RIGHT NAVIGATION - No row logic anymore
                 switch(e.key) {
-                    case 'ArrowUp':
-                        e.preventDefault();
-                        moveFocus(-config.columns);
-                        setMode('navigation');
-                        break;
-                        
-                    case 'ArrowDown':
-                        e.preventDefault();
-                        moveFocus(config.columns);
-                        setMode('navigation');
-                        break;
-                        
                     case 'ArrowLeft':
                         e.preventDefault();
-                        moveFocus(-1);
+                        moveFocus(-1); // Simple left
                         setMode('navigation');
                         break;
                         
                     case 'ArrowRight':
                         e.preventDefault();
-                        moveFocus(1);
+                        moveFocus(1); // Simple right
                         setMode('navigation');
+                        break;
+                        
+                    case 'ArrowUp':
+                    case 'ArrowDown':
+                        // Ignore up/down since we have single row
+                        e.preventDefault();
                         break;
                         
                     case 'Home':
@@ -443,59 +472,16 @@
             });
         }
         
-        // Setup event listeners
-        function setupEventListeners() {
-            // Refresh button
-            document.getElementById('refreshBtn').addEventListener('click', () => {
-                if (currentPlayingUrl) {
-                    // Refresh current video
-                    const newUrl = currentPlayingUrl + '&t=' + Date.now();
-                    document.getElementById('playerFrame').src = newUrl;
-                    showStatus("Video refreshed");
-                    setMode('skip-ad');
-                }
-            });
-            
-            // Listen for video play events
-            window.addEventListener('message', (event) => {
-                // Listen for YouTube player state changes
-                if (event.data && event.data.event === 'infoDelivery') {
-                    if (event.data.info && event.data.info.playerState) {
-                        const playerState = event.data.info.playerState;
-                        
-                        if (playerState === 1) { // Playing
-                            isVideoPlaying = true;
-                            // Switch to skip-ad mode when video starts playing
-                            setTimeout(() => setMode('skip-ad'), config.skipAdDelay);
-                        } else if (playerState === 2) { // Paused
-                            isVideoPlaying = false;
-                        }
-                    }
-                }
-            });
-        }
-        
-        // Move focus in a direction
+        // Move focus in a direction - SIMPLIFIED VERSION
         function moveFocus(direction) {
             let newIndex = currentFocusIndex + direction;
-            const totalButtons = buttonElements.length;
+            const totalButtons = channelButtons.length;
             
-            if (newIndex < 0) newIndex = 0;
-            if (newIndex >= totalButtons) newIndex = totalButtons - 1;
-            
-            if (direction === -1 || direction === 1) {
-                const currentRow = Math.floor(currentFocusIndex / config.columns);
-                const newRow = Math.floor(newIndex / config.columns);
-                
-                if (currentRow !== newRow) {
-                    if (direction === -1) {
-                        newIndex = currentFocusIndex + (config.columns - 1);
-                        if (newIndex >= totalButtons) newIndex = totalButtons - 1;
-                    } else {
-                        newIndex = currentFocusIndex - (config.columns - 1);
-                        if (newIndex < 0) newIndex = 0;
-                    }
-                }
+            // Simple boundary checking
+            if (newIndex < 0) {
+                newIndex = totalButtons - 1; // Wrap to last button
+            } else if (newIndex >= totalButtons) {
+                newIndex = 0; // Wrap to first button
             }
             
             focusButton(newIndex);
@@ -504,22 +490,24 @@
         
         // Focus a specific button
         function focusButton(index) {
-            if (buttonElements.length === 0) return;
+            if (channelButtons.length === 0) return;
             
-            buttonElements.forEach(btn => {
+            channelButtons.forEach(btn => {
                 btn.classList.remove('focus-highlight');
                 btn.blur();
             });
             
+            // Ensure index is within bounds
             if (index < 0) index = 0;
-            if (index >= buttonElements.length) index = buttonElements.length - 1;
+            if (index >= channelButtons.length) index = channelButtons.length - 1;
             
             currentFocusIndex = index;
-            const button = buttonElements[index];
+            const button = channelButtons[index];
             
             button.classList.add('focus-highlight');
             button.focus({preventScroll: false});
             
+            // Scroll button into view (centered horizontally)
             button.scrollIntoView({
                 behavior: 'smooth',
                 block: 'nearest',
@@ -529,17 +517,17 @@
         
         // Select button (visual feedback)
         function selectButton(index) {
-            if (buttonElements.length === 0) return;
+            if (channelButtons.length === 0) return;
             
-            buttonElements.forEach(btn => btn.classList.remove('active'));
+            channelButtons.forEach(btn => btn.classList.remove('active'));
             
-            if (buttonElements[index]) {
-                buttonElements[index].classList.add('active');
-                buttonElements[index].classList.remove('focus-highlight');
+            if (channelButtons[index]) {
+                channelButtons[index].classList.add('active');
+                channelButtons[index].classList.remove('focus-highlight');
                 
                 setTimeout(() => {
-                    if (buttonElements[index]) {
-                        buttonElements[index].classList.add('focus-highlight');
+                    if (channelButtons[index]) {
+                        channelButtons[index].classList.add('focus-highlight');
                     }
                 }, 300);
             }
@@ -596,17 +584,7 @@
                     '*'
                 );
                 
-                // Method 2: Try to click skip button via simulated click
-                playerFrame.contentWindow.postMessage(
-                    JSON.stringify({
-                        event: 'command',
-                        func: 'playVideo',
-                        args: ''
-                    }), 
-                    '*'
-                );
-                
-                // Method 3: Try to seek forward (skip 30 seconds)
+                // Method 2: Try to seek forward (skip 30 seconds)
                 playerFrame.contentWindow.postMessage(
                     JSON.stringify({
                         event: 'command',
@@ -633,6 +611,38 @@
             }, 2000);
         }
         
+        // Setup event listeners
+        function setupEventListeners() {
+            // Refresh button
+            document.getElementById('refreshBtn').addEventListener('click', () => {
+                if (currentPlayingUrl) {
+                    // Refresh current video
+                    const newUrl = currentPlayingUrl + '&t=' + Date.now();
+                    document.getElementById('playerFrame').src = newUrl;
+                    showStatus("Video refreshed");
+                    setMode('skip-ad');
+                }
+            });
+            
+            // Listen for video play events
+            window.addEventListener('message', (event) => {
+                // Listen for YouTube player state changes
+                if (event.data && event.data.event === 'infoDelivery') {
+                    if (event.data.info && event.data.info.playerState) {
+                        const playerState = event.data.info.playerState;
+                        
+                        if (playerState === 1) { // Playing
+                            isVideoPlaying = true;
+                            // Switch to skip-ad mode when video starts playing
+                            setTimeout(() => setMode('skip-ad'), config.skipAdDelay);
+                        } else if (playerState === 2) { // Paused
+                            isVideoPlaying = false;
+                        }
+                    }
+                }
+            });
+        }
+        
         // Show status message
         function showStatus(message, duration = 2000) {
             if (!config.showStatusMessages) return;
@@ -653,14 +663,13 @@
         window.addEventListener('load', () => {
             document.body.focus();
             
-            // Simulate a click to enable autoplay (required by some browsers)
+            // Simulate a click to enable autoplay
             document.body.click();
         });
         
         // Periodically check if video is playing and switch modes
         setInterval(() => {
             if (isVideoPlaying && mode === 'navigation') {
-                // If video is playing but we're in navigation mode, switch to skip-ad
                 setMode('skip-ad');
             }
         }, 5000);
