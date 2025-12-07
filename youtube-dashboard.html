@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: #111;
+            color: white;
+            font-family: Arial, sans-serif;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        
+        /* Top Navigation Bar */
+        .nav-info {
+            background: #222;
+            padding: 12px 20px;
+            color: #4CAF50;
+            font-size: 16px;
+            text-align: center;
+            border-bottom: 2px solid #4CAF50;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .nav-controls {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .nav-btn {
+            background: #444;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+        
+        .nav-btn:hover {
+            background: #555;
+        }
+        
+        .nav-btn:focus {
+            outline: 2px solid #4CAF50;
+        }
+        
+        /* Button Container - TOP */
+        .button-container {
+            background: #222;
+            padding: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            overflow-x: auto;
+            max-height: 30vh;
+            min-height: 120px;
+            align-items: center;
+            justify-content: center;
+            scroll-behavior: smooth;
+        }
+        
+        .button-container::-webkit-scrollbar {
+            height: 6px;
+        }
+        
+        .button-container::-webkit-scrollbar-track {
+            background: #222;
+        }
+        
+        .button-container::-webkit-scrollbar-thumb {
+            background: #4CAF50;
+            border-radius: 3px;
+        }
+        
+        /* Video Buttons with Focus States */
+        .video-btn {
+            background: #333;
+            color: #ddd;
+            border: 3px solid transparent;
+            padding: 15px 20px;
+            border-radius: 8px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+            min-width: 160px;
+            text-align: center;
+            outline: none;
+            position: relative;
+        }
+        
+        .video-btn:hover {
+            background: #444;
+            color: white;
+        }
+        
+        .video-btn:focus {
+            background: #4CAF50;
+            color: white;
+            border-color: white;
+            transform: scale(1.05);
+            box-shadow: 0 0 15px rgba(76, 175, 80, 0.7);
+            z-index: 10;
+        }
+        
+        .video-btn.active {
+            background: #2E7D32;
+            color: white;
+            border-color: #81C784;
+        }
+        
+        /* Video Player Container - BOTTOM */
+        .video-container {
+            flex: 1;
+            background: #000;
+            display: flex;
+            flex-direction: column;
+            padding: 0;
+            width: 100%;
+        }
+        
+        /* Video Player */
+        .video-wrapper {
+            flex: 1;
+            position: relative;
+            width: 100%;
+            height: 100%;
+            background: #000;
+        }
+        
+        #playerFrame {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        
+        /* Status indicator */
+        .status-indicator {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background: rgba(0,0,0,0.9);
+            color: #4CAF50;
+            padding: 12px 16px;
+            border-radius: 6px;
+            font-size: 14px;
+            display: none;
+            z-index: 1000;
+            border: 1px solid #4CAF50;
+            max-width: 300px;
+        }
+        
+        /* Focus highlight animation */
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(76, 175, 80, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(76, 175, 80, 0); }
+        }
+        
+        .video-btn.focus-highlight {
+            animation: pulse 1.5s infinite;
+        }
+        
+        /* Add Channel Dialog */
+        .dialog-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+        
+        .dialog {
+            background: #222;
+            padding: 30px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 500px;
+            border: 2px solid #4CAF50;
+        }
+        
+        .dialog h3 {
+            color: #4CAF50;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #ddd;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            background: #333;
+            border: 2px solid #444;
+            border-radius: 5px;
+            color: white;
+            font-size: 16px;
+        }
+        
+        .form-group input:focus {
+            outline: none;
+            border-color: #4CAF50;
+        }
+        
+        .dialog-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            margin-top: 25px;
+        }
+        
+        .dialog-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            min-width: 100px;
+        }
+        
+        .dialog-btn.primary {
+            background: #4CAF50;
+            color: white;
+        }
+        
+        .dialog-btn.secondary {
+            background: #666;
+            color: white;
+        }
+        
+        .dialog-btn:hover {
+            opacity: 0.9;
+        }
+        
+        .dialog-btn:focus {
+            outline: 2px solid white;
+        }
+        
+        /* Alternative Player Message */
+        .alternative-message {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            background: rgba(0,0,0,0.8);
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #4CAF50;
+            display: none;
+            z-index: 100;
+        }
+        
+        .alternative-message a {
+            color: #4CAF50;
+            text-decoration: none;
+            font-weight: bold;
+            display: inline-block;
+            margin-top: 15px;
+            padding: 10px 20px;
+            background: #333;
+            border-radius: 5px;
+        }
+        
+        .alternative-message a:hover {
+            background: #444;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-height: 600px) {
+            .button-container {
+                max-height: 40vh;
+                padding: 10px;
+                gap: 10px;
+            }
+            
+            .video-btn {
+                padding: 12px 16px;
+                font-size: 16px;
+                min-width: 140px;
+            }
+            
+            .nav-info {
+                font-size: 14px;
+                padding: 10px 15px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .nav-info {
+                flex-direction: column;
+                gap: 10px;
+                padding: 15px;
+            }
+            
+            .video-btn {
+                min-width: 130px;
+                font-size: 16px;
+                padding: 12px 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <div class="nav-info">
+        <div>📺 News Channel Player</div>
+        <div class="nav-controls">
+            <button class="nav-btn" id="addChannelBtn" accesskey="a">➕ Add Channel</button>
+            <button class="nav-btn" id="refreshBtn" accesskey="r">🔄 Refresh</button>
+        </div>
+    </div>
+    
+    <!-- Channel Buttons -->
+    <div class="button-container" id="buttonContainer">
+        <!-- Buttons will be added here dynamically -->
+    </div>
+    
+    <!-- Video Player -->
+    <div class="video-container">
+        <div class="video-wrapper">
+            <iframe id="playerFrame" 
+                src=""
+                frameborder="0" 
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                allowfullscreen>
+            </iframe>
+            <div class="alternative-message" id="alternativeMessage">
+                <div>Embedding restricted by YouTube</div>
+                <div style="font-size: 14px; margin-top: 10px; color: #aaa;">
+                    Click below to watch directly on YouTube
+                </div>
+                <a href="#" id="directLink" target="_blank">Watch on YouTube</a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Status Indicator -->
+    <div class="status-indicator" id="statusIndicator"></div>
+    
+    <!-- Add Channel Dialog -->
+    <div class="dialog-overlay" id="dialogOverlay">
+        <div class="dialog">
+            <h3>➕ Add New Channel</h3>
+            <div class="form-group">
+                <label for="channelName">Channel Name:</label>
+                <input type="text" id="channelName" placeholder="Enter channel name" autofocus>
+            </div>
+            <div class="form-group">
+                <label for="channelUrl">YouTube URL:</label>
+                <input type="text" id="channelUrl" placeholder="https://www.youtube.com/watch?v=...">
+            </div>
+            <div class="dialog-buttons">
+                <button class="dialog-btn secondary" id="cancelBtn">Cancel</button>
+                <button class="dialog-btn primary" id="saveBtn">Add Channel</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // News Channels with ALTERNATIVE IDs that work with embedding
+        // These are not live streams but recent videos that allow embedding
+        const channels = [
+            { title: "92 News", id: "5JqA10I-7j8", isLive: false },
+            { title: "AAJ News", id: "f6B1J8I5Lv8", isLive: false },
+            { title: "Geo News", id: "o3ExqXWq2lw", isLive: false },
+            { title: "24 News Live", id: "RszJNQx9nXM", isLive: false },
+            { title: "TRT English", id: "Q0wqQj4fP54", isLive: false },
+            { title: "Al Jazeera English", id: "ZVjgBcN0sSc", isLive: false }
+        ];
+        
+        // Configuration
+        const config = {
+            columns: 4,
+            enableAutoFocus: true,
+            showStatusMessages: true,
+            autoPlayOnSelect: true
+        };
+        
+        // State variables
+        let currentFocusIndex = 0;
+        let buttonElements = [];
+        let isDialogOpen = false;
+        let currentPlayingVideoId = '';
+        
+        // Initialize application
+        function init() {
+            createButtons();
+            setupKeyboardNavigation();
+            setupEventListeners();
+            setupYouTubePlayerListener();
+            focusButton(0);
+            showStatus("Ready. Use arrow keys to navigate channels.");
+            
+            loadSavedChannels();
+        }
+        
+        // Set up YouTube player message listener
+        function setupYouTubePlayerListener() {
+            window.addEventListener('message', (event) => {
+                // Listen for messages from YouTube iframe
+                console.log('YouTube message:', event.data);
+                
+                // If we get an error, show alternative message
+                if (event.data && event.data.info === 'UNPLAYABLE') {
+                    showAlternativeMessage();
+                }
+            });
+        }
+        
+        // Load channels from localStorage
+        function loadSavedChannels() {
+            const savedChannels = localStorage.getItem('newsChannels');
+            if (savedChannels) {
+                try {
+                    const parsed = JSON.parse(savedChannels);
+                    if (parsed.length > 0) {
+                        parsed.forEach(savedChannel => {
+                            if (!channels.some(ch => ch.id === savedChannel.id)) {
+                                channels.push(savedChannel);
+                            }
+                        });
+                        createButtons();
+                        focusButton(currentFocusIndex);
+                    }
+                } catch (e) {
+                    console.error('Error loading saved channels:', e);
+                }
+            }
+        }
+        
+        // Save channels to localStorage
+        function saveChannels() {
+            localStorage.setItem('newsChannels', JSON.stringify(channels));
+        }
+        
+        // Create channel buttons
+        function createButtons() {
+            const container = document.getElementById('buttonContainer');
+            container.innerHTML = '';
+            buttonElements = [];
+            
+            channels.forEach((channel, index) => {
+                const button = document.createElement('button');
+                button.className = 'video-btn';
+                button.textContent = channel.title;
+                button.dataset.index = index;
+                button.dataset.videoId = channel.id;
+                button.dataset.channelTitle = channel.title;
+                button.tabIndex = -1;
+                
+                button.onclick = () => {
+                    selectButton(index);
+                    playVideo(channel.id, channel.title, true);
+                };
+                
+                container.appendChild(button);
+                buttonElements.push(button);
+            });
+        }
+        
+        // Setup keyboard navigation for TV remote
+        function setupKeyboardNavigation() {
+            document.addEventListener('keydown', (e) => {
+                if (isDialogOpen) return;
+                
+                const totalButtons = buttonElements.length;
+                
+                switch(e.key) {
+                    case 'ArrowUp':
+                        e.preventDefault();
+                        moveFocus(-config.columns);
+                        break;
+                        
+                    case 'ArrowDown':
+                        e.preventDefault();
+                        moveFocus(config.columns);
+                        break;
+                        
+                    case 'ArrowLeft':
+                        e.preventDefault();
+                        moveFocus(-1);
+                        break;
+                        
+                    case 'ArrowRight':
+                        e.preventDefault();
+                        moveFocus(1);
+                        break;
+                        
+                    case 'Enter':
+                        e.preventDefault();
+                        selectButton(currentFocusIndex);
+                        const channel = channels[currentFocusIndex];
+                        if (channel) {
+                            playVideo(channel.id, channel.title, true);
+                        }
+                        break;
+                        
+                    case ' ':
+                        e.preventDefault();
+                        showStatus("Press Enter to play selected channel");
+                        break;
+                        
+                    case 'Home':
+                        e.preventDefault();
+                        focusButton(0);
+                        break;
+                        
+                    case 'End':
+                        e.preventDefault();
+                        focusButton(totalButtons - 1);
+                        break;
+                        
+                    case 'a':
+                    case 'A':
+                        if (e.ctrlKey || e.metaKey) {
+                            e.preventDefault();
+                            openAddChannelDialog();
+                        }
+                        break;
+                        
+                    case 'Escape':
+                        if (isDialogOpen) {
+                            e.preventDefault();
+                            closeDialog();
+                        }
+                        break;
+                }
+            });
+        }
+        
+        // Setup event listeners for buttons
+        function setupEventListeners() {
+            // Add Channel button
+            document.getElementById('addChannelBtn').addEventListener('click', openAddChannelDialog);
+            
+            // Refresh button
+            document.getElementById('refreshBtn').addEventListener('click', () => {
+                createButtons();
+                focusButton(currentFocusIndex);
+                showStatus("Channels refreshed");
+            });
+            
+            // Dialog buttons
+            document.getElementById('cancelBtn').addEventListener('click', closeDialog);
+            document.getElementById('saveBtn').addEventListener('click', saveNewChannel);
+            
+            // Direct link for alternative message
+            document.getElementById('directLink').addEventListener('click', (e) => {
+                e.preventDefault();
+                window.open(`https://www.youtube.com/watch?v=${currentPlayingVideoId}`, '_blank');
+            });
+        }
+        
+        // Move focus in a direction
+        function moveFocus(direction) {
+            let newIndex = currentFocusIndex + direction;
+            const totalButtons = buttonElements.length;
+            
+            if (newIndex < 0) newIndex = 0;
+            if (newIndex >= totalButtons) newIndex = totalButtons - 1;
+            
+            if (direction === -1 || direction === 1) {
+                const currentRow = Math.floor(currentFocusIndex / config.columns);
+                const newRow = Math.floor(newIndex / config.columns);
+                
+                if (currentRow !== newRow) {
+                    if (direction === -1) {
+                        newIndex = currentFocusIndex + (config.columns - 1);
+                        if (newIndex >= totalButtons) newIndex = totalButtons - 1;
+                    } else {
+                        newIndex = currentFocusIndex - (config.columns - 1);
+                        if (newIndex < 0) newIndex = 0;
+                    }
+                }
+            }
+            
+            focusButton(newIndex);
+            showStatus(`Selected: ${channels[newIndex].title}`);
+        }
+        
+        // Focus a specific button
+        function focusButton(index) {
+            if (buttonElements.length === 0) return;
+            
+            buttonElements.forEach(btn => {
+                btn.classList.remove('focus-highlight');
+                btn.blur();
+            });
+            
+            if (index < 0) index = 0;
+            if (index >= buttonElements.length) index = buttonElements.length - 1;
+            
+            currentFocusIndex = index;
+            const button = buttonElements[index];
+            
+            button.classList.add('focus-highlight');
+            button.focus({preventScroll: false});
+            
+            button.scrollIntoView({
+                behavior: 'smooth',
+                block: 'nearest',
+                inline: 'center'
+            });
+        }
+        
+        // Select button (visual feedback)
+        function selectButton(index) {
+            if (buttonElements.length === 0) return;
+            
+            buttonElements.forEach(btn => btn.classList.remove('active'));
+            
+            if (buttonElements[index]) {
+                buttonElements[index].classList.add('active');
+                buttonElements[index].classList.remove('focus-highlight');
+                
+                setTimeout(() => {
+                    if (buttonElements[index]) {
+                        buttonElements[index].classList.add('focus-highlight');
+                    }
+                }, 300);
+            }
+        }
+        
+        // Play video function - FIXED for SameSite cookie issue
+        function playVideo(videoId, channelTitle, checkEmbedding = true) {
+            currentPlayingVideoId = videoId;
+            const playerFrame = document.getElementById('playerFrame');
+            const alternativeMsg = document.getElementById('alternativeMessage');
+            
+            // Hide alternative message
+            alternativeMsg.style.display = 'none';
+            
+            // Set direct link
+            document.getElementById('directLink').href = `https://www.youtube.com/watch?v=${videoId}`;
+            
+            // Special parameters to fix SameSite cookie issue
+            // Using youtube-nocookie.com domain which doesn't set restrictive cookies
+            const youtubeUrl = `https://www.youtube-nocookie.com/embed/${videoId}?` +
+                `autoplay=1&` +
+                `rel=0&` +
+                `modestbranding=1&` +
+                `playsinline=1&` +
+                `enablejsapi=1&` +
+                `widget_referrer=${encodeURIComponent(window.location.origin)}&` +
+                `origin=${encodeURIComponent(window.location.origin)}&` +
+                `iv_load_policy=3&` + // Hide annotations
+                `controls=1&` + // Show controls
+                `fs=1`; // Allow fullscreen
+            
+            playerFrame.src = youtubeUrl;
+            
+            // Check if embedding is allowed after a delay
+            if (checkEmbedding) {
+                setTimeout(() => {
+                    checkEmbeddingStatus(videoId);
+                }, 3000);
+            }
+            
+            showStatus(`Loading: ${channelTitle}`, 2000);
+        }
+        
+        // Check if embedding is working
+        function checkEmbeddingStatus(videoId) {
+            const playerFrame = document.getElementById('playerFrame');
+            try {
+                // Try to access iframe content (might fail due to cross-origin)
+                const iframeDoc = playerFrame.contentDocument || playerFrame.contentWindow.document;
+                
+                // If we can access the document, check for error messages
+                const bodyText = iframeDoc.body.innerText;
+                if (bodyText.includes('Video unavailable') || 
+                    bodyText.includes('Watch on YouTube') ||
+                    bodyText.includes('embedding disabled')) {
+                    showAlternativeMessage();
+                }
+            } catch (e) {
+                // Cross-origin error - can't check directly
+                // Rely on message events instead
+            }
+        }
+        
+        // Show alternative message when embedding fails
+        function showAlternativeMessage() {
+            const alternativeMsg = document.getElementById('alternativeMessage');
+            alternativeMsg.style.display = 'block';
+            showStatus("Embedding restricted. Click link to watch directly.", 5000);
+        }
+        
+        // Open Add Channel Dialog
+        function openAddChannelDialog() {
+            isDialogOpen = true;
+            const dialog = document.getElementById('dialogOverlay');
+            dialog.style.display = 'flex';
+            
+            document.getElementById('channelName').value = '';
+            document.getElementById('channelUrl').value = '';
+            document.getElementById('channelName').focus();
+            
+            showStatus("Add new channel dialog opened");
+        }
+        
+        // Close dialog
+        function closeDialog() {
+            isDialogOpen = false;
+            document.getElementById('dialogOverlay').style.display = 'none';
+            
+            if (buttonElements[currentFocusIndex]) {
+                buttonElements[currentFocusIndex].focus();
+            }
+            
+            showStatus("Dialog closed");
+        }
+        
+        // Save new channel
+        function saveNewChannel() {
+            const nameInput = document.getElementById('channelName');
+            const urlInput = document.getElementById('channelUrl');
+            
+            const channelName = nameInput.value.trim();
+            const channelUrl = urlInput.value.trim();
+            
+            if (!channelName) {
+                showStatus("Please enter a channel name", 3000);
+                nameInput.focus();
+                return;
+            }
+            
+            if (!channelUrl) {
+                showStatus("Please enter a YouTube URL", 3000);
+                urlInput.focus();
+                return;
+            }
+            
+            // Extract YouTube video ID from URL
+            let videoId = '';
+            try {
+                const url = new URL(channelUrl);
+                if (url.hostname.includes('youtube.com') || url.hostname.includes('youtu.be')) {
+                    if (url.hostname.includes('youtu.be')) {
+                        videoId = url.pathname.slice(1);
+                    } else {
+                        videoId = url.searchParams.get('v');
+                    }
+                }
+            } catch (e) {
+                showStatus("Invalid URL format", 3000);
+                urlInput.focus();
+                return;
+            }
+            
+            if (!videoId) {
+                showStatus("Could not extract video ID from URL", 3000);
+                urlInput.focus();
+                return;
+            }
+            
+            // Check if channel already exists
+            if (channels.some(ch => ch.id === videoId)) {
+                showStatus("This channel already exists", 3000);
+                return;
+            }
+            
+            // Add new channel
+            const newChannel = {
+                title: channelName,
+                id: videoId,
+                isLive: false
+            };
+            
+            channels.push(newChannel);
+            saveChannels();
+            createButtons();
+            focusButton(channels.length - 1);
+            
+            closeDialog();
+            showStatus(`Added: ${channelName}`, 3000);
+        }
+        
+        // Show status message
+        function showStatus(message, duration = 2000) {
+            if (!config.showStatusMessages) return;
+            
+            const indicator = document.getElementById('statusIndicator');
+            indicator.textContent = message;
+            indicator.style.display = 'block';
+            
+            setTimeout(() => {
+                indicator.style.display = 'none';
+            }, duration);
+        }
+        
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', init);
+        
+        // Auto-focus on body for keyboard control
+        window.addEventListener('load', () => {
+            document.body.focus();
+        });
+    </script>
+</body>
+</html>
