@@ -29,15 +29,15 @@
         /* Top Navigation Bar - ULTRA COMPACT height */
         .nav-bar {
             background: #222;
-            padding: 0 6px; /* Even less padding */
+            padding: 0 6px;
             color: #4CAF50;
-            height: 30px; /* Reduced from 40px to 30px */
+            height: 30px;
             min-height: 30px;
             max-height: 30px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            border-bottom: 1px solid #4CAF50; /* Thinner border */
+            border-bottom: 1px solid #4CAF50;
             flex-shrink: 0;
             flex: 0 0 auto;
         }
@@ -45,18 +45,18 @@
         /* Channel buttons in nav bar - ULTRA COMPACT */
         .channel-buttons {
             display: flex;
-            gap: 4px; /* Even smaller gap */
+            gap: 4px;
             overflow-x: auto;
             flex: 1;
             height: 100%;
             align-items: center;
-            padding: 0 6px; /* Less padding */
+            padding: 0 6px;
             scrollbar-width: thin;
             scrollbar-color: #4CAF50 #222;
         }
         
         .channel-buttons::-webkit-scrollbar {
-            height: 2px; /* Thinner scrollbar */
+            height: 2px;
         }
         
         .channel-buttons::-webkit-scrollbar-track {
@@ -72,18 +72,18 @@
         .channel-btn {
             background: #333;
             color: #ddd;
-            border: 1px solid transparent; /* Thinner border */
-            padding: 3px 8px; /* Even less padding */
-            border-radius: 3px; /* Smaller radius */
-            font-size: 12px; /* Smaller font */
+            border: 1px solid transparent;
+            padding: 3px 8px;
+            border-radius: 3px;
+            font-size: 12px;
             cursor: pointer;
             transition: all 0.2s ease;
             white-space: nowrap;
-            min-width: 70px; /* Smaller min-width */
+            min-width: 70px;
             text-align: center;
             outline: none;
             position: relative;
-            height: 22px; /* Reduced height */
+            height: 22px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -99,8 +99,8 @@
             background: #4CAF50;
             color: white;
             border-color: white;
-            transform: scale(1.02); /* Very slight scale */
-            box-shadow: 0 0 4px rgba(76, 175, 80, 0.7); /* Smaller shadow */
+            transform: scale(1.02);
+            box-shadow: 0 0 4px rgba(76, 175, 80, 0.7);
             z-index: 10;
         }
         
@@ -110,22 +110,22 @@
             border-color: #81C784;
         }
         
-        /* Refresh button - ULTRA COMPACT */
+        /* Refresh button - ICON ONLY */
         .refresh-btn {
             background: #444;
             color: white;
             border: none;
-            padding: 3px 8px; /* Less padding */
+            padding: 0;
             border-radius: 3px;
-            font-size: 10px; /* Smaller font */
+            font-size: 14px; /* For icon sizing */
             cursor: pointer;
             transition: all 0.2s;
-            height: 22px; /* Reduced height */
+            height: 22px;
+            width: 22px; /* Square button */
             display: flex;
             align-items: center;
             justify-content: center;
-            min-width: 60px; /* Smaller */
-            margin-left: 6px; /* Less margin */
+            margin-left: 6px;
             flex-shrink: 0;
         }
         
@@ -134,7 +134,22 @@
         }
         
         .refresh-btn:focus {
-            outline: 1px solid #4CAF50; /* Thinner outline */
+            outline: 1px solid #4CAF50;
+            transform: rotate(90deg); /* Fun rotation on focus */
+        }
+        
+        /* Refresh icon animation */
+        .refresh-icon {
+            display: inline-block;
+            transition: transform 0.3s;
+        }
+        
+        .refresh-btn:hover .refresh-icon {
+            transform: rotate(45deg);
+        }
+        
+        .refresh-btn:active .refresh-icon {
+            transform: rotate(180deg);
         }
         
         /* Video Container - 30px more space! */
@@ -143,7 +158,7 @@
             background: #000;
             width: 100%;
             min-height: 0;
-            height: calc(100vh - 30px); /* 30px nav instead of 60px */
+            height: calc(100vh - 30px);
             position: relative;
             overflow: hidden;
         }
@@ -170,13 +185,13 @@
         /* Status indicator */
         .status-indicator {
             position: fixed;
-            top: 35px; /* Adjusted for smaller nav */
+            top: 35px;
             right: 10px;
             background: rgba(0,0,0,0.9);
             color: #4CAF50;
-            padding: 8px 12px; /* Smaller */
+            padding: 8px 12px;
             border-radius: 4px;
-            font-size: 11px; /* Smaller */
+            font-size: 11px;
             display: none;
             z-index: 1000;
             border: 1px solid #4CAF50;
@@ -203,9 +218,9 @@
             }
             
             .refresh-btn {
-                min-width: 50px;
-                font-size: 9px;
-                padding: 2px 6px;
+                width: 20px;
+                height: 20px;
+                font-size: 12px;
             }
             
             .nav-bar {
@@ -242,10 +257,10 @@
             }
             
             .refresh-btn {
-                min-width: 40px;
-                font-size: 8px;
-                padding: 2px 4px;
-                height: 20px;
+                width: 18px;
+                height: 18px;
+                font-size: 10px;
+                margin-left: 4px;
             }
             
             .status-indicator {
@@ -257,17 +272,17 @@
     </style>
 </head>
 <body>
-    <!-- Top Navigation Bar with Channel Buttons - ULTRA COMPACT -->
+    <!-- Top Navigation Bar with Channel Buttons -->
     <div class="nav-bar">
         <div class="channel-buttons" id="channelButtons">
             <!-- Channel buttons will be added here dynamically -->
         </div>
-        <button class="refresh-btn" id="refreshBtn">
-            🔄 Refresh
+        <button class="refresh-btn" id="refreshBtn" title="Refresh Video">
+            <span class="refresh-icon">🔄</span>
         </button>
     </div>
     
-    <!-- Video Player - 30px more space! -->
+    <!-- Video Player -->
     <div class="video-container">
         <div class="video-wrapper">
             <iframe id="playerFrame" 
@@ -321,7 +336,8 @@
             enableAutoFocus: true,
             showStatusMessages: true,
             skipAdDelay: 500,
-            skipAdKey: 'Enter'
+            skipAdKey: 'Enter',
+            autoPlayDelay: 4000 // INCREASED to 4 seconds
         };
         
         // State variables
@@ -333,7 +349,7 @@
         let skipAdTimeout = null;
         let isAnimating = false;
         let hasAutoPlayed = false;
-        let hasUserNavigated = false; // Track if user has pressed arrow keys
+        let hasUserNavigated = false;
         
         // Initialize application
         function init() {
@@ -341,12 +357,14 @@
             setupKeyboardNavigation();
             setupEventListeners();
             focusButton(0);
-            showStatus("Ready. Auto-playing first channel...", 2000);
+            showStatus("Loading... Auto-play in " + (config.autoPlayDelay/1000) + " seconds", 3000);
             
-            // Auto-play first channel after delay
+            // INCREASED DELAY: Auto-play first channel after 4 seconds
             setTimeout(() => {
-                autoPlayFirstChannel();
-            }, 1500);
+                if (!hasAutoPlayed) {
+                    autoPlayFirstChannel();
+                }
+            }, config.autoPlayDelay);
         }
         
         // Auto-play first channel on load
@@ -366,7 +384,7 @@
                     playVideo(firstChannel.embedUrl, firstChannel.title);
                 }
                 hasAutoPlayed = true;
-            }, 300);
+            }, 500); // Additional delay before playing
         }
         
         // Create channel buttons in nav bar
@@ -388,7 +406,7 @@
                     selectButton(index);
                     playVideo(channel.embedUrl, channel.title);
                     mode = 'navigation';
-                    hasUserNavigated = true; // Click counts as navigation
+                    hasUserNavigated = true;
                 };
                 
                 container.appendChild(button);
@@ -440,7 +458,7 @@
                         break;
                 }
                 
-                // ENTER key behavior - CHANGED LOGIC
+                // ENTER key behavior
                 if (e.key === 'Enter') {
                     e.preventDefault();
                     
@@ -466,13 +484,19 @@
                     }
                 }
                 
-                // SPACE key behavior - same logic as Enter
+                // SPACE key behavior
                 if (e.key === ' ') {
                     e.preventDefault();
                     if (isVideoPlaying && hasUserNavigated) {
                         skipAdvertisement();
                         mode = 'skip-ad';
                     }
+                }
+                
+                // 'R' key for refresh
+                if (e.key === 'r' || e.key === 'R') {
+                    e.preventDefault();
+                    refreshCurrentVideo();
                 }
             });
         }
@@ -603,6 +627,25 @@
             };
         }
         
+        // Refresh current video
+        function refreshCurrentVideo() {
+            if (currentPlayingUrl) {
+                const newUrl = currentPlayingUrl.split('?')[0] + 
+                    '?autoplay=1&rel=0&modestbranding=1&playsinline=1&t=' + Date.now();
+                document.getElementById('playerFrame').src = newUrl;
+                showStatus("Video refreshed");
+                mode = 'skip-ad';
+                hasUserNavigated = true;
+                
+                // Animate the refresh icon
+                const refreshIcon = document.querySelector('.refresh-icon');
+                refreshIcon.style.transform = 'rotate(360deg)';
+                setTimeout(() => {
+                    refreshIcon.style.transform = 'rotate(0deg)';
+                }, 300);
+            }
+        }
+        
         // Try to skip advertisement
         function skipAdvertisement() {
             showStatus("Skipping ad...", 1000);
@@ -666,15 +709,19 @@
         
         // Setup event listeners
         function setupEventListeners() {
-            // Refresh button
-            document.getElementById('refreshBtn').addEventListener('click', () => {
-                if (currentPlayingUrl) {
-                    const newUrl = currentPlayingUrl + '&t=' + Date.now();
-                    document.getElementById('playerFrame').src = newUrl;
-                    showStatus("Video refreshed");
-                    mode = 'skip-ad';
-                    hasUserNavigated = true;
-                }
+            // Refresh button - ICON ONLY
+            document.getElementById('refreshBtn').addEventListener('click', refreshCurrentVideo);
+            
+            // Add hover effect for refresh button
+            const refreshBtn = document.getElementById('refreshBtn');
+            const refreshIcon = refreshBtn.querySelector('.refresh-icon');
+            
+            refreshBtn.addEventListener('mouseenter', () => {
+                refreshIcon.style.transform = 'rotate(45deg)';
+            });
+            
+            refreshBtn.addEventListener('mouseleave', () => {
+                refreshIcon.style.transform = 'rotate(0deg)';
             });
             
             // Add click event to body for autoplay
