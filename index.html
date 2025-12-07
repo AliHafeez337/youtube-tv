@@ -10,7 +10,7 @@
         }
         
         html, body {
-            height: 100%;
+            height: 90vh !important; /* FORCE 90vh maximum */
             width: 100%;
             overflow: hidden;
         }
@@ -21,42 +21,42 @@
             font-family: Arial, sans-serif;
             display: flex;
             flex-direction: column;
-            height: 100vh;
-            max-height: 100vh;
+            height: 90vh !important; /* ENFORCE 90vh */
+            max-height: 90vh !important;
             overflow: hidden;
         }
         
-        /* Top Navigation Bar - SUPER ULTRA COMPACT height */
+        /* Top Navigation Bar - GOOD for TV */
         .nav-bar {
             background: #222;
-            padding: 0 4px; /* Even less padding */
+            padding: 0 10px;
             color: #4CAF50;
-            height: 20px; /* REDUCED from 30px to 20px (50px less total!) */
-            min-height: 20px;
-            max-height: 20px;
+            height: 55px; /* Good size for TV remote */
+            min-height: 55px;
+            max-height: 55px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            border-bottom: 1px solid #4CAF50;
+            border-bottom: 3px solid #4CAF50;
             flex-shrink: 0;
             flex: 0 0 auto;
         }
         
-        /* Channel buttons in nav bar - SUPER COMPACT */
+        /* Channel buttons - TV REMOTE FRIENDLY */
         .channel-buttons {
             display: flex;
-            gap: 3px; /* Even smaller gap */
+            gap: 8px;
             overflow-x: auto;
             flex: 1;
             height: 100%;
             align-items: center;
-            padding: 0 4px; /* Less padding */
+            padding: 0 10px;
             scrollbar-width: thin;
             scrollbar-color: #4CAF50 #222;
         }
         
         .channel-buttons::-webkit-scrollbar {
-            height: 1px; /* Very thin scrollbar */
+            height: 5px; /* Visible on TV */
         }
         
         .channel-buttons::-webkit-scrollbar-track {
@@ -65,30 +65,30 @@
         
         .channel-buttons::-webkit-scrollbar-thumb {
             background: #4CAF50;
-            border-radius: 0.5px;
+            border-radius: 3px;
         }
         
-        /* Channel button styles - SUPER COMPACT */
+        /* Channel button styles - BIG for TV */
         .channel-btn {
             background: #333;
             color: #ddd;
-            border: 1px solid transparent;
-            padding: 1px 5px; /* Minimal padding */
-            border-radius: 2px; /* Very small radius */
-            font-size: 10px; /* Smaller font */
+            border: 3px solid transparent;
+            padding: 10px 18px;
+            border-radius: 8px;
+            font-size: 16px; /* Bigger for TV viewing distance */
+            font-weight: bold;
             cursor: pointer;
             transition: all 0.2s ease;
             white-space: nowrap;
-            min-width: 55px; /* Much smaller min-width */
+            min-width: 110px;
             text-align: center;
             outline: none;
             position: relative;
-            height: 16px; /* Reduced height */
+            height: 42px; /* Big buttons for TV remote */
             display: flex;
             align-items: center;
             justify-content: center;
             flex-shrink: 0;
-            line-height: 1; /* Tight line spacing */
         }
         
         .channel-btn:hover {
@@ -100,8 +100,8 @@
             background: #4CAF50;
             color: white;
             border-color: white;
-            transform: scale(1.01); /* Very slight scale */
-            box-shadow: 0 0 2px rgba(76, 175, 80, 0.7); /* Tiny shadow */
+            transform: scale(1.08); /* Bigger scale for TV */
+            box-shadow: 0 0 15px rgba(76, 175, 80, 0.8);
             z-index: 10;
         }
         
@@ -111,22 +111,22 @@
             border-color: #81C784;
         }
         
-        /* Refresh button - SUPER COMPACT */
+        /* Refresh button - TV SIZE */
         .refresh-btn {
             background: #444;
             color: white;
             border: none;
             padding: 0;
-            border-radius: 2px;
-            font-size: 10px; /* Smaller icon */
+            border-radius: 8px;
+            font-size: 20px; /* Big icon for TV */
             cursor: pointer;
             transition: all 0.2s;
-            height: 16px; /* Reduced height */
-            width: 16px; /* Smaller square */
+            height: 42px;
+            width: 42px;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-left: 4px; /* Less margin */
+            margin-left: 10px;
             flex-shrink: 0;
         }
         
@@ -135,21 +135,23 @@
         }
         
         .refresh-btn:focus {
-            outline: 1px solid #4CAF50;
+            outline: 3px solid #4CAF50;
+            transform: scale(1.1);
         }
         
-        /* Video Container - 50px MORE space now! */
+        /* Video Container - FIXED for 90vh TV */
         .video-container {
             flex: 1;
             background: #000;
             width: 100%;
             min-height: 0;
-            height: calc(100vh - 20px); /* 20px nav instead of 60px - 50px more space! */
+            height: calc(90vh - 55px) !important; /* ENFORCE 90vh - nav */
+            max-height: calc(90vh - 55px) !important;
             position: relative;
             overflow: hidden;
         }
         
-        /* Video Player */
+        /* Video Player - FITS within 90vh */
         .video-wrapper {
             width: 100%;
             height: 100%;
@@ -168,135 +170,114 @@
             left: 0;
         }
         
-        /* Status indicator */
+        /* Status indicator - TV VISIBLE */
         .status-indicator {
             position: fixed;
-            top: 25px; /* Adjusted for smaller nav */
-            right: 10px;
-            background: rgba(0,0,0,0.9);
+            top: 65px;
+            right: 15px;
+            background: rgba(0,0,0,0.95);
             color: #4CAF50;
-            padding: 6px 10px; /* Smaller */
-            border-radius: 3px;
-            font-size: 9px; /* Smaller */
+            padding: 12px 18px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: bold;
             display: none;
             z-index: 1000;
-            border: 1px solid #4CAF50;
-            max-width: 200px;
+            border: 2px solid #4CAF50;
+            max-width: 300px;
+            text-align: center;
         }
         
-        /* Focus highlight animation */
-        @keyframes pulse-tiny {
-            0% { box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.3); }
-            50% { box-shadow: 0 0 0 2px rgba(76, 175, 80, 0); }
+        /* Focus highlight animation - TV VISIBLE */
+        @keyframes pulse-tv {
+            0% { box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.8); }
+            70% { box-shadow: 0 0 0 15px rgba(76, 175, 80, 0); }
             100% { box-shadow: 0 0 0 0 rgba(76, 175, 80, 0); }
         }
         
         .channel-btn.focus-highlight {
-            animation: pulse-tiny 2s infinite;
+            animation: pulse-tv 2s infinite;
         }
         
-        /* Channel name abbreviations for very small screens */
-        .channel-btn .full-name {
-            display: inline;
-        }
-        
-        .channel-btn .short-name {
-            display: none;
-        }
-        
-        /* Responsive adjustments */
-        @media (max-width: 768px) {
-            .channel-btn {
-                min-width: 45px;
-                font-size: 9px;
-                padding: 1px 3px;
-            }
-            
-            .refresh-btn {
-                width: 14px;
-                height: 14px;
-                font-size: 9px;
-            }
-            
+        /* TV-specific adjustments */
+        @media (min-width: 768px) and (min-height: 400px) {
+            /* TV Optimizations */
             .nav-bar {
-                height: 18px;
-                min-height: 18px;
-                max-height: 18px;
-            }
-            
-            .video-container {
-                height: calc(100vh - 18px);
-            }
-            
-            .status-indicator {
-                top: 23px;
-                font-size: 8px;
-                padding: 4px 8px;
-            }
-            
-            /* Show short names on tablets */
-            .channel-btn .full-name {
-                display: none;
-            }
-            
-            .channel-btn .short-name {
-                display: inline;
-            }
-        }
-        
-        @media (max-width: 480px) {
-            .nav-bar {
-                height: 16px;
-                min-height: 16px;
-                max-height: 16px;
-            }
-            
-            .video-container {
-                height: calc(100vh - 16px);
+                height: 60px;
+                min-height: 60px;
+                max-height: 60px;
             }
             
             .channel-btn {
-                min-width: 40px;
-                font-size: 8px;
-                padding: 0 2px;
-                height: 14px;
+                height: 46px;
+                font-size: 18px;
+                min-width: 120px;
+                padding: 12px 20px;
             }
             
             .refresh-btn {
-                width: 12px;
-                height: 12px;
-                font-size: 8px;
-                margin-left: 2px;
+                height: 46px;
+                width: 46px;
+                font-size: 22px;
+            }
+            
+            .video-container {
+                height: calc(90vh - 60px) !important;
+                max-height: calc(90vh - 60px) !important;
             }
             
             .status-indicator {
-                top: 21px;
-                font-size: 7px;
-                padding: 3px 6px;
+                top: 70px;
+                font-size: 16px;
+                padding: 15px 20px;
             }
         }
         
-        /* For very small text, ensure readability */
+        /* For very small TV screens */
         @media (max-height: 500px) {
+            body {
+                height: 85vh !important;
+                max-height: 85vh !important;
+            }
+            
+            .video-container {
+                height: calc(85vh - 50px) !important;
+                max-height: calc(85vh - 50px) !important;
+            }
+            
+            .nav-bar {
+                height: 50px;
+                min-height: 50px;
+                max-height: 50px;
+            }
+            
             .channel-btn {
-                font-size: 9px !important;
-                min-width: 50px !important;
+                height: 38px;
+                font-size: 14px;
+                min-width: 100px;
+                padding: 8px 15px;
+            }
+            
+            .refresh-btn {
+                height: 38px;
+                width: 38px;
+                font-size: 18px;
             }
         }
     </style>
 </head>
 <body>
-    <!-- Top Navigation Bar with Channel Buttons - SUPER COMPACT -->
+    <!-- Navigation Bar - TV OPTIMIZED -->
     <div class="nav-bar">
         <div class="channel-buttons" id="channelButtons">
             <!-- Channel buttons will be added here dynamically -->
         </div>
-        <button class="refresh-btn" id="refreshBtn" title="Refresh Video">
+        <button class="refresh-btn" id="refreshBtn" title="Refresh Video (R Key)">
             <span class="refresh-icon">🔄</span>
         </button>
     </div>
     
-    <!-- Video Player - 50px MORE space! -->
+    <!-- Video Player - STRICTLY 90vh - 55px -->
     <div class="video-container">
         <div class="video-wrapper">
             <iframe id="playerFrame" 
@@ -317,53 +298,42 @@
         const channels = [
             {
                 title: "92 News",
-                shortTitle: "92",
                 embedUrl: "https://www.youtube.com/embed/8uh7YorHaa8?autoplay=1&rel=0&modestbranding=1&playsinline=1"
             },
             {
                 title: "AAJ News",
-                shortTitle: "AAJ",
                 embedUrl: "https://www.youtube.com/embed/KH36EOuT7Rw?autoplay=1&rel=0&modestbranding=1&playsinline=1"
             },
             {
                 title: "Geo News",
-                shortTitle: "Geo",
                 embedUrl: "https://www.youtube.com/embed/ifgOMEerYQI?autoplay=1&rel=0&modestbranding=1&playsinline=1"
             },
             {
                 title: "24 News Live",
-                shortTitle: "24",
                 embedUrl: "https://www.youtube.com/embed/l18WSuRMtHo?autoplay=1&rel=0&modestbranding=1&playsinline=1"
             },
             {
-                title: "Dunya News",
-                shortTitle: "Dunya",
-                embedUrl: "https://www.youtube.com/embed/GlHSFtTFfJE?autoplay=1&rel=0&modestbranding=1&playsinline=1"
-            },
-            {
-                title: "Samaa News",
-                shortTitle: "Samaa",
-                embedUrl: "https://www.youtube.com/embed/0ozWs13Msus?autoplay=1&rel=0&modestbranding=1&playsinline=1"
-            },
-            {
                 title: "TRT English",
-                shortTitle: "TRT",
                 embedUrl: "https://www.youtube.com/embed/by1sxGgo3TU?autoplay=1&rel=0&modestbranding=1&playsinline=1"
             },
             {
                 title: "Al Jazeera English",
-                shortTitle: "AJ",
                 embedUrl: "https://www.youtube.com/embed/gCNeDWCI0vo?autoplay=1&rel=0&modestbranding=1&playsinline=1"
+            },
+            {
+                title: "Dunya News",
+                embedUrl: "https://www.youtube.com/embed/GlHSFtTFfJE?autoplay=1&rel=0&modestbranding=1&playsinline=1"
             }
         ];
         
-        // Configuration
+        // TV Configuration
         const config = {
             enableAutoFocus: true,
             showStatusMessages: true,
             skipAdDelay: 500,
             skipAdKey: 'Enter',
-            autoPlayDelay: 4000
+            autoPlayDelay: 4000,
+            tvMode: true
         };
         
         // State variables
@@ -383,7 +353,10 @@
             setupKeyboardNavigation();
             setupEventListeners();
             focusButton(0);
-            showStatus("Loading... Auto-play in " + (config.autoPlayDelay/1000) + "s", 3000);
+            showStatus("TV News Player - Ready", 3000);
+            
+            // Adjust for TV if needed
+            adjustForTV();
             
             // Auto-play first channel after delay
             setTimeout(() => {
@@ -391,6 +364,24 @@
                     autoPlayFirstChannel();
                 }
             }, config.autoPlayDelay);
+        }
+        
+        // Adjust layout for TV
+        function adjustForTV() {
+            const isTV = window.innerWidth > 1280 || window.innerHeight > 720;
+            
+            if (isTV) {
+                console.log("TV mode detected");
+                // Force 90vh maximum
+                document.body.style.height = "90vh";
+                document.body.style.maxHeight = "90vh";
+                
+                const videoContainer = document.querySelector('.video-container');
+                videoContainer.style.height = `calc(90vh - 55px)`;
+                videoContainer.style.maxHeight = `calc(90vh - 55px)`;
+                
+                showStatus("TV Mode Activated", 2000);
+            }
         }
         
         // Auto-play first channel on load
@@ -413,7 +404,7 @@
             }, 500);
         }
         
-        // Create channel buttons in nav bar
+        // Create channel buttons
         function createChannelButtons() {
             const container = document.getElementById('channelButtons');
             container.innerHTML = '';
@@ -422,19 +413,7 @@
             channels.forEach((channel, index) => {
                 const button = document.createElement('button');
                 button.className = 'channel-btn';
-                
-                // Add both full and short names
-                const fullSpan = document.createElement('span');
-                fullSpan.className = 'full-name';
-                fullSpan.textContent = channel.title;
-                
-                const shortSpan = document.createElement('span');
-                shortSpan.className = 'short-name';
-                shortSpan.textContent = channel.shortTitle || channel.title.substring(0, 4);
-                
-                button.appendChild(fullSpan);
-                button.appendChild(shortSpan);
-                
+                button.textContent = channel.title;
                 button.dataset.index = index;
                 button.dataset.embedUrl = channel.embedUrl;
                 button.dataset.channelTitle = channel.title;
@@ -750,22 +729,13 @@
             // Refresh button
             document.getElementById('refreshBtn').addEventListener('click', refreshCurrentVideo);
             
-            // Add hover effect for refresh button
-            const refreshBtn = document.getElementById('refreshBtn');
-            const refreshIcon = refreshBtn.querySelector('.refresh-icon');
-            
-            refreshBtn.addEventListener('mouseenter', () => {
-                refreshIcon.style.transform = 'rotate(45deg)';
-            });
-            
-            refreshBtn.addEventListener('mouseleave', () => {
-                refreshIcon.style.transform = 'rotate(0deg)';
-            });
-            
             // Add click event to body for autoplay
             document.body.addEventListener('click', () => {
                 // This helps satisfy user interaction requirement for autoplay
             });
+            
+            // Window resize for TV adjustment
+            window.addEventListener('resize', adjustForTV);
         }
         
         // Show status message
@@ -788,6 +758,7 @@
         window.addEventListener('load', () => {
             document.body.focus();
             document.body.click();
+            adjustForTV();
         });
     </script>
 </body>
